@@ -37,6 +37,7 @@
 /* Cards */
 .card {
   display: block;
+  border: none;
 }
 
 .card__thumb {
