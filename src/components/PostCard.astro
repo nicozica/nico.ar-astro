@@ -1,5 +1,6 @@
 ---
 import type { WPPost } from '../data/wp.ts';
+import { getFeatured, getAuthor } from '../data/wp.ts';
 
 export interface Props {
   post: WPPost;
@@ -22,6 +23,10 @@ function calculateReadTime(content: string): string {
 // Get categories from embedded data
 const categories = post._embedded?.['wp:term']?.[0] || [];
 
+// Get featured image and author using helper functions
+const featuredImage = getFeatured(post);
+const authorName = getAuthor(post);
+
 // Format date
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -35,7 +40,17 @@ const formatDate = (dateString: string): string => {
 
 <article class="card">
   <!-- Article thumbnail -->
-  <div class="card__thumb"></div>
+  {featuredImage.src ? (
+    <img 
+      src={featuredImage.src} 
+      alt={featuredImage.alt || post.title.rendered}
+      class="card__thumb"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <div class="card__thumb"></div>
+  )}
   
   <!-- Categories/Pills -->
   {categories.length > 0 && (
@@ -55,6 +70,7 @@ const formatDate = (dateString: string): string => {
   
   <!-- Meta information -->
   <div class="card__meta">
+    {authorName && <small>By {authorName}</small>}
     <small>{formatDate(post.date)}</small>
     <small>{calculateReadTime(post.excerpt.rendered)}</small>
   </div>

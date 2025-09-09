@@ -1,9 +1,11 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
+  workflow_dispatch: # Only allow manual trigger
+  # Temporarily disabled automatic deployment
+  # push:
+  #   branches: [main]
+  #   tags: ['v*']
 
 permissions:
   pages: write

@@ -1,5 +1,6 @@
 ---
 // Header component with logo, tagline, and About me CTA
+import logoNico from '../assets/images/logo-nico.svg';
 ---
 
 <header class="header">
@@ -7,10 +8,12 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <div class="header__brand">
-          <!-- Logo circle -->
-          <div style="width: 60px; height: 60px; background: #0DA0E6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-            <span style="color: white; font-family: var(--font-heading); font-weight: 900; font-size: 24px;">N</span>
-          </div>
+          <!-- Logo -->
+          <img 
+            src={logoNico.src} 
+            alt="Nicolas Zicarelli Logo"
+            style="width: 60px; height: 60px;"
+          />
           <div>
             <h1 style="font-size: 18px; margin: 0; line-height: 1.2;">nico.ar</h1>
             <p style="font-size: 14px; margin: 0; color: var(--text-body);">Notes on Design & Tech</p>

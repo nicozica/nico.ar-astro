@@ -8,13 +8,10 @@ import { getPosts } from '../data/wp.ts';
 
 // Get current page from URL params
 const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
-const postsPerPage = 10;
+const postsPerPage = 6;
 
 // Fetch posts for current page
-const posts = await getPosts(currentPage, postsPerPage);
-
-// Calculate total pages (for mock data, we'll assume 2 pages)
-const totalPages = 2; // In a real app, this would come from the API headers or a separate call
+const { items: posts, totalPages } = await getPosts(currentPage, postsPerPage);
 ---
 
 <BaseLayout title="nico.ar - Notes on Design & Tech" description="Personal blog about design, technology, and user experience by Nicolas from Buenos Aires.">

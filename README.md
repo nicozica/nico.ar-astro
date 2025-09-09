@@ -1,34 +1,145 @@
 # nico.ar Blog
 
-Un blog personal minimalista construido con Astro + Bootstrap que consume contenido desde WordPress via REST API.
+A minimalist personal blog built with Astro + Bootstrap that consumes content from WordPress via REST API.
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
-- **[Astro](https://astro.build/)** - Framework frontend principal con TypeScript
-- **[Bootstrap 5](https://getbootstrap.com/)** - Sistema de grid y utilidades responsive
-- **WordPress REST API** - CMS headless para gestión de contenido
-- **CSS Modular** - Tokens de diseño, tipografía y componentes organizados
-- **GitHub Actions** - CI/CD automático con preview en PRs y deploy a producción
+- **[Astro](https://astro.build/)** - Frontend framework with TypeScript
+- **[Bootstrap 5](https://getbootstrap.com/)** - Responsive grid system and utilities
+- **WordPress REST API** - Headless CMS for content management
+- **Modular CSS** - Design tokens, typography, and organized components
+- **GitHub Actions** - Automated CI/CD with PR previews and production deployment
 
-## ✨ Características
+## ✨ Features
 
-- **Diseño Editorial**: Tipografía Fraunces + Figtree con jerarquía consistente
-- **Escala de Espaciado**: Sistema coherente (16–24–32–48–64–80px)
-- **Cards de Artículos**: Con título, metadatos, tags y excerpt
-- **Páginas de Artículo**: Layout completo con secciones, imágenes y enlaces útiles
-- **Footer Unificado**: Navegación editorial + identidad de marca
-- **Responsive**: Optimizado para desktop, tablet y móvil
+- **Editorial Design**: Fraunces + Figtree typography with consistent hierarchy
+- **Spacing Scale**: Coherent system (16–24–32–48–64–80px)
+- **Article Cards**: With title, metadata, tags, and excerpt
+- **Article Pages**: Complete layout with sections, images, and useful links
+- **Unified Footer**: Editorial navigation + brand identity
+- **Responsive**: Optimized for desktop, tablet, and mobile
+- **Featured Images**: Support for WordPress featured media with lazy loading
+- **HTML Sanitization**: Safe rendering of WordPress content
+- **Pagination**: Real pagination using WordPress API headers
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### Prerrequisitos
+### Prerequisites
 
 - Node.js 18+
-- npm o yarn
+- npm or yarn
 
-### Instalación
+### Installation
 
+1. Clone the repository:
 ```bash
+git clone <repository-url>
+cd nico.ar-astro
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure WordPress API:
+   - Copy `.env.example` to `.env`
+   - Set `PUBLIC_WP_BASE` to your WordPress site's REST API URL (e.g., `https://yoursite.com/wp-json/wp/v2`)
+
+4. Run development server:
+```bash
+npm run dev
+```
+
+5. Open [http://localhost:4321](http://localhost:4321) in your browser.
+
+## 🔧 Configuration
+
+### Environment Variables
+
+- `PUBLIC_WP_BASE`: WordPress REST API base URL. If not set, the site will use mock data for development.
+
+### WordPress Setup
+
+Your WordPress site should have:
+- REST API enabled (default in modern WordPress)
+- Featured images support
+- Categories configured
+- Posts with proper content structure
+
+The blog automatically fetches:
+- Post title, content, excerpt, date
+- Featured images from `_embedded['wp:featuredmedia']`
+- Categories from `_embedded['wp:term']`
+- Author information from `_embedded['author']`
+- Pagination info from `X-WP-TotalPages` header
+
+## 📝 Content Guidelines
+
+### Useful Links
+The blog automatically detects and preserves "Useful links" sections that exist within your WordPress post content. It does not add fabricated links.
+
+### HTML Content
+All WordPress content is sanitized for security, allowing only safe HTML tags:
+- Text formatting: `p`, `h1-h6`, `strong`, `em`, `br`
+- Links: `a` (with `href`, `target`, `rel` attributes)
+- Images: `img` (with `src`, `alt`, `loading`, `decoding` attributes)
+- Lists: `ul`, `ol`, `li`
+- Code: `pre`, `code`
+- Other: `blockquote`, `hr`
+
+## 🚀 Build & Deploy
+
+### Development
+```bash
+npm run dev
+```
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Preview Production Build
+```bash
+npm run preview
+```
+
+### GitHub Actions
+The repository includes CI/CD workflows that are currently disabled for manual control:
+- **Deploy workflow**: Builds and deploys to GitHub Pages (manual trigger only)
+- **Preview workflow**: Builds PR previews (manual trigger only)
+
+To re-enable automatic deployment, uncomment the `push` and `pull_request` triggers in the workflow files.
+
+## 🎨 Design System
+
+### Typography
+- **Headings**: Fraunces Black #21346A
+- **Body**: Figtree Regular #577284
+- **Card excerpts**: 16px with 24px line-height
+- **Article body**: 22px with 36px line-height
+
+### Colors
+- Primary: #21346A (heading color)
+- Body text: #577284
+- Muted text: #6C8096
+- Pills background: Custom pill-bg variable
+
+### Spacing
+Uses a consistent scale: 8, 12, 16, 24, 32, 48, 64, 80px
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+[Add your license here]bash
 # Clonar el repositorio
 git clone <tu-repo-url>
 cd nico.ar-astro

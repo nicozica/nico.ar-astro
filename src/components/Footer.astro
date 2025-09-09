@@ -1,12 +1,17 @@
 ---
-import { getCategories } from '../data/wp.ts';
-
-// Get categories for footer
-const categories = await getCategories();
+// Footer component - keeping it simple without additional API calls
 const latestArticles = [
   { title: 'The Linux Designer', href: '/posts/the-linux-designer' },
   { title: 'Rethinking MFA', href: '/posts/rethinking-mfa-user-sends-code' },
   { title: 'Psychology of the Web', href: '/posts/psychology-of-the-web' }
+];
+
+// Simple footer categories - can be made dynamic later if needed
+const categories = [
+  { name: 'Design', slug: 'design' },
+  { name: 'UX', slug: 'ux' },
+  { name: 'Technology', slug: 'technology' },
+  { name: 'Productivity', slug: 'productivity' }
 ];
 ---
 

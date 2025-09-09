@@ -1,8 +1,10 @@
 name: Preview
 
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch: # Only allow manual trigger
+  # Temporarily disabled automatic preview
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   build:

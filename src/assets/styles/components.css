@@ -44,6 +44,8 @@
   background: #e5ecf3;
   aspect-ratio: 16/9;
   border-radius: 12px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .card__title {
@@ -57,8 +59,8 @@
 }
 
 .card__excerpt {
-  font-size: calc(var(--fs-sm) * 1px);
-  line-height: calc(var(--lh-card) * 1px);
+  font-size: 16px;
+  line-height: 24px;
   color: #6c8096;
 }
 

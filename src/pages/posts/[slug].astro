@@ -3,11 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Pills from '../../components/Pills.astro';
-import { getPostBySlug, getPosts } from '../../data/wp.ts';
+import { getPostBySlug, getPosts, getFeatured, getAuthor } from '../../data/wp.ts';
+import sanitizeHtml from 'sanitize-html';
 
 // Generate static paths for all posts
 export async function getStaticPaths() {
-  const posts = await getPosts(1, 100); // Get all posts for static generation
+  const { items: posts } = await getPosts(1, 100); // Get all posts for static generation
   return posts.map(post => ({
     params: { slug: post.slug },
     props: { post }
@@ -32,8 +33,36 @@ function calculateReadTime(content: string): string {
   return `${readTime} min`;
 }
 
+// Sanitize HTML content
+function sanitizeContent(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br'],
+    allowedAttributes: {
+      'a': ['href', 'target', 'rel'],
+      'img': ['src', 'alt', 'loading', 'decoding']
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+    transformTags: {
+      'img': function(tagName: string, attribs: any) {
+        return {
+          tagName: 'img',
+          attribs: {
+            ...attribs,
+            loading: 'lazy',
+            decoding: 'async'
+          }
+        };
+      }
+    }
+  });
+}
+
 // Get categories from embedded data
 const categories = post._embedded?.['wp:term']?.[0] || [];
+
+// Get author name and featured image using helper functions
+const authorName = getAuthor(post);
+const featuredImage = getFeatured(post);
 
 // Format date
 const formatDate = (dateString: string): string => {
@@ -46,6 +75,7 @@ const formatDate = (dateString: string): string => {
 };
 
 const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
+const sanitizedContent = sanitizeContent(post.content.rendered);
 ---
 
 <BaseLayout 
@@ -55,8 +85,18 @@ const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
   <Header slot="header" />
   
   <article class="section">
-    <!-- Featured image placeholder -->
-    <div style="background: #E5ECF3; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: var(--sp-32);"></div>
+    <!-- Featured image -->
+    {featuredImage.src ? (
+      <img 
+        src={featuredImage.src} 
+        alt={featuredImage.alt || post.title.rendered}
+        style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; margin-bottom: var(--sp-32);"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div style="background: #E5ECF3; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: var(--sp-32);"></div>
+    )}
     
     <!-- Categories -->
     {categories.length > 0 && (
@@ -70,26 +110,13 @@ const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
     
     <!-- Meta information -->
     <div style="display: flex; gap: var(--sp-16); margin-bottom: var(--sp-48); font-size: 14px; color: #6C8096;">
+      {authorName && <span>By {authorName}</span>}
       <span>{formatDate(post.date)}</span>
-      <span>{calculateReadTime(post.content?.rendered || post.excerpt.rendered)}</span>
+      <span>{calculateReadTime(post.content.rendered)}</span>
     </div>
     
     <!-- Article content -->
-    <div class="article-content" set:html={post.content?.rendered || post.excerpt.rendered} />
-    
-    <!-- Useful links section -->
-    <div class="hr-muted"></div>
-    
-    <div style="margin-top: var(--sp-48);">
-      <h2>Useful links</h2>
-      <ul style="margin-top: var(--sp-24);">
-        <li><a href="https://developer.mozilla.org" target="_blank" rel="noopener noreferrer">Mozilla Developer Network</a> - The ultimate operating system</li>
-        <li><a href="https://figma.com" target="_blank" rel="noopener noreferrer">Figma</a> - A powerful free design app for macOS, Ubuntu, and Windo...</li>
-        <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> - Free and open source vector analysis software</li>
-        <li><a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer">Visual Studio Code</a> - Cross-platform Linux system monitor with a web UI</li>
-        <li><a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> - Full-suite Linux monitoring tool with a new generation</li>
-      </ul>
-    </div>
+    <div class="article-content" set:html={sanitizedContent} />
   </article>
   
   <Footer slot="footer" />
@@ -97,8 +124,8 @@ const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
 
 <style>
   .article-content {
-    font-size: calc(var(--fs-lg) * 1px);
-    line-height: calc(var(--lh-body) * 1px);
+    font-size: 22px;
+    line-height: 36px;
   }
   
   .article-content p {
