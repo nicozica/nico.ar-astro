@@ -1,0 +1,26 @@
+{
+  "name": "nico-ar-astro",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/",
+    "preview": "astro preview",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource/figtree": "^5.2.8",
+    "@fontsource/fraunces": "^5.2.7",
+    "astro": "^5.13.7",
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2"
+  }
+}

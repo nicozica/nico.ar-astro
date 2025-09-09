@@ -1,0 +1,66 @@
+---
+import type { WPPost } from '../data/wp.ts';
+
+export interface Props {
+  post: WPPost;
+}
+
+const { post } = Astro.props;
+
+// Function to strip HTML tags from excerpt
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
+}
+
+// Function to calculate read time (approximate)
+function calculateReadTime(content: string): string {
+  const wordCount = stripHtml(content).split(/\s+/).length;
+  const readTime = Math.ceil(wordCount / 200); // 200 words per minute
+  return `${readTime} min`;
+}
+
+// Get categories from embedded data
+const categories = post._embedded?.['wp:term']?.[0] || [];
+
+// Format date
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+};
+---
+
+<article class="card">
+  <!-- Article thumbnail -->
+  <div class="card__thumb"></div>
+  
+  <!-- Categories/Pills -->
+  {categories.length > 0 && (
+    <div class="pills" style="margin-top: var(--sp-16);">
+      {categories.slice(0, 3).map(category => (
+        <span class="pill">{category.name}</span>
+      ))}
+    </div>
+  )}
+  
+  <!-- Article title -->
+  <h2 class="card__title">
+    <a href={`/posts/${post.slug}`} style="color: inherit; text-decoration: none;">
+      {post.title.rendered}
+    </a>
+  </h2>
+  
+  <!-- Meta information -->
+  <div class="card__meta">
+    <small>{formatDate(post.date)}</small>
+    <small>{calculateReadTime(post.excerpt.rendered)}</small>
+  </div>
+  
+  <!-- Excerpt -->
+  <p class="card__excerpt">
+    {stripHtml(post.excerpt.rendered)}
+  </p>
+</article>

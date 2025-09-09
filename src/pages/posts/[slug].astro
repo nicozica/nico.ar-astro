@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Pills from '../../components/Pills.astro';
+import { getPostBySlug, getPosts } from '../../data/wp.ts';
+
+// Generate static paths for all posts
+export async function getStaticPaths() {
+  const posts = await getPosts(1, 100); // Get all posts for static generation
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Function to strip HTML tags for meta description
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
+}
+
+// Function to calculate read time
+function calculateReadTime(content: string): string {
+  const wordCount = stripHtml(content).split(/\s+/).length;
+  const readTime = Math.ceil(wordCount / 200); // 200 words per minute
+  return `${readTime} min`;
+}
+
+// Get categories from embedded data
+const categories = post._embedded?.['wp:term']?.[0] || [];
+
+// Format date
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
+
+const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
+---
+
+<BaseLayout 
+  title={`${post.title.rendered} - nico.ar`} 
+  description={metaDescription}
+>
+  <Header slot="header" />
+  
+  <article class="section">
+    <!-- Featured image placeholder -->
+    <div style="background: #E5ECF3; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: var(--sp-32);"></div>
+    
+    <!-- Categories -->
+    {categories.length > 0 && (
+      <div style="margin-bottom: var(--sp-24);">
+        <Pills tags={categories} />
+      </div>
+    )}
+    
+    <!-- Article title -->
+    <h1 style="margin-bottom: var(--sp-24);">{post.title.rendered}</h1>
+    
+    <!-- Meta information -->
+    <div style="display: flex; gap: var(--sp-16); margin-bottom: var(--sp-48); font-size: 14px; color: #6C8096;">
+      <span>{formatDate(post.date)}</span>
+      <span>{calculateReadTime(post.content?.rendered || post.excerpt.rendered)}</span>
+    </div>
+    
+    <!-- Article content -->
+    <div class="article-content" set:html={post.content?.rendered || post.excerpt.rendered} />
+    
+    <!-- Useful links section -->
+    <div class="hr-muted"></div>
+    
+    <div style="margin-top: var(--sp-48);">
+      <h2>Useful links</h2>
+      <ul style="margin-top: var(--sp-24);">
+        <li><a href="https://developer.mozilla.org" target="_blank" rel="noopener noreferrer">Mozilla Developer Network</a> - The ultimate operating system</li>
+        <li><a href="https://figma.com" target="_blank" rel="noopener noreferrer">Figma</a> - A powerful free design app for macOS, Ubuntu, and Windo...</li>
+        <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> - Free and open source vector analysis software</li>
+        <li><a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer">Visual Studio Code</a> - Cross-platform Linux system monitor with a web UI</li>
+        <li><a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> - Full-suite Linux monitoring tool with a new generation</li>
+      </ul>
+    </div>
+  </article>
+  
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .article-content {
+    font-size: calc(var(--fs-lg) * 1px);
+    line-height: calc(var(--lh-body) * 1px);
+  }
+  
+  .article-content p {
+    margin-bottom: var(--sp-24);
+  }
+  
+  .article-content h2 {
+    margin-top: var(--sp-48);
+    margin-bottom: var(--sp-24);
+  }
+  
+  .article-content h3 {
+    margin-top: var(--sp-32);
+    margin-bottom: var(--sp-16);
+  }
+  
+  .article-content img {
+    border-radius: 12px;
+    margin: var(--sp-32) 0;
+  }
+  
+  .article-content blockquote {
+    border-left: 4px solid var(--muted);
+    padding-left: var(--sp-24);
+    margin: var(--sp-32) 0;
+    font-style: italic;
+    color: #6C8096;
+  }
+  
+  .article-content code {
+    background: var(--pill-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  
+  .article-content pre {
+    background: #f8f9fa;
+    padding: var(--sp-24);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: var(--sp-24) 0;
+  }
+  
+  .article-content pre code {
+    background: none;
+    padding: 0;
+  }
+</style>

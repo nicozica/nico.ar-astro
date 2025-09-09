@@ -1,0 +1,52 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-body);
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  color: var(--brand-blue-700);
+  font-weight: 900; /* Fraunces Black */
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: calc(var(--fs-xxl) * 1px);
+}
+
+h2 {
+  font-size: calc(var(--fs-xl) * 1px);
+}
+
+h3 {
+  font-size: calc(var(--fs-lg) * 1px);
+}
+
+p {
+  font-size: calc(var(--fs-lg) * 1px);
+  line-height: calc(var(--lh-body) * 1px);
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+small,
+.meta {
+  font-size: 14px;
+  line-height: calc(var(--lh-meta) * 1px);
+  color: #6c8096;
+}

@@ -1,0 +1,15 @@
+---
+export interface Props {
+  tags: Array<{ name: string; slug?: string }>;
+}
+
+const { tags } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <div class="pills">
+    {tags.map(tag => (
+      <span class="pill">{tag.name}</span>
+    ))}
+  </div>
+)}

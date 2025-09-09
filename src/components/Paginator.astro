@@ -1,0 +1,56 @@
+---
+export interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl?: string;
+}
+
+const { currentPage, totalPages, baseUrl = '' } = Astro.props;
+
+const prevPage = currentPage > 1 ? currentPage - 1 : null;
+const nextPage = currentPage < totalPages ? currentPage + 1 : null;
+
+const getPageUrl = (page: number) => {
+  if (page === 1) return baseUrl || '/';
+  return `${baseUrl}?page=${page}`;
+};
+---
+
+{totalPages > 1 && (
+  <div class="paginator">
+    <!-- Previous arrow -->
+    {prevPage ? (
+      <a href={getPageUrl(prevPage)} class="paginator__arrow" aria-label="Previous page">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </a>
+    ) : (
+      <span class="paginator__arrow" style="opacity: 0.3; cursor: not-allowed;">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </span>
+    )}
+    
+    <!-- Current page indicator -->
+    <span class="paginator__current">
+      {String(currentPage).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
+    </span>
+    
+    <!-- Next arrow -->
+    {nextPage ? (
+      <a href={getPageUrl(nextPage)} class="paginator__arrow" aria-label="Next page">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+      </a>
+    ) : (
+      <span class="paginator__arrow" style="opacity: 0.3; cursor: not-allowed;">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+      </span>
+    )}
+  </div>
+)}

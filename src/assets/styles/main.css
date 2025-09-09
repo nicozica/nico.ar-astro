@@ -1,0 +1,13 @@
+/* Import fonts */
+@import '@fontsource/fraunces/900.css'; /* Black weight */
+@import '@fontsource/figtree/400.css'; /* Regular weight */
+
+/* Import Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.css';
+
+/* Import our custom styles in order */
+@import './tokens.css';
+@import './base.css';
+@import './typography.css';
+@import './layout.css';
+@import './components.css';

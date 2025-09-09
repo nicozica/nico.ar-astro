@@ -1,0 +1,111 @@
+/* Header */
+.header {
+  padding: var(--sp-24) 0;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+}
+
+.header__cta a {
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #bfe8ff;
+}
+
+.header__cta a:hover {
+  background: #e6f7fd;
+}
+
+/* Pills */
+.pills {
+  display: flex;
+  gap: var(--sp-8);
+}
+
+.pill {
+  background: var(--pill-bg);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: calc(var(--fs-xs) * 1px);
+  color: #60697b;
+}
+
+/* Cards */
+.card {
+  display: block;
+}
+
+.card__thumb {
+  background: #e5ecf3;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+}
+
+.card__title {
+  margin-top: var(--sp-16);
+}
+
+.card__meta {
+  display: flex;
+  gap: var(--sp-16);
+  margin: var(--sp-12) 0;
+}
+
+.card__excerpt {
+  font-size: calc(var(--fs-sm) * 1px);
+  line-height: calc(var(--lh-card) * 1px);
+  color: #6c8096;
+}
+
+/* Footer */
+.footer-top {
+  background: var(--footer-bg);
+  padding: var(--sp-48) 0;
+}
+
+.footer-bottom {
+  background: var(--footer-brand);
+  color: white;
+  text-align: center;
+  padding: var(--sp-24) 0;
+}
+
+/* Paginator */
+.paginator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-24);
+  margin: var(--sp-48) 0;
+}
+
+.paginator__arrow {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5ecf3;
+  border-radius: 8px;
+  color: var(--text-body);
+  text-decoration: none;
+}
+
+.paginator__arrow:hover {
+  background: #f5f7fa;
+  text-decoration: none;
+}
+
+.paginator__arrow:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.paginator__current {
+  font-size: calc(var(--fs-sm) * 1px);
+  color: var(--text-body);
+}

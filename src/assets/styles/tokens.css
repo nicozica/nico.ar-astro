@@ -1,0 +1,42 @@
+:root {
+  /* Colors */
+  --brand-blue-700: #21346a; /* Fraunces headings */
+  --text-body: #577284; /* Figtree body */
+  --link: #0391e3;
+  --muted: #eceff3;
+  --bg: #ffffff;
+  --pill-bg: #f5f7fa;
+  --footer-bg: #f0f2f5;
+  --footer-brand: #0da0e6;
+
+  /* Typography */
+  --font-heading: 'Fraunces', ui-serif, serif;
+  --font-body:
+    'Figtree', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
+
+  /* Type scale (px) */
+  --fs-xxl: 32;
+  --fs-xl: 24;
+  --fs-lg: 22;
+  --fs-md: 20;
+  --fs-sm: 16;
+  --fs-xs: 14;
+
+  /* Line-heights (px) */
+  --lh-body: 34; /* for 22px article body */
+  --lh-card: 24; /* for 16px excerpts */
+  --lh-meta: 20; /* for 14–15px meta */
+
+  /* Spacing scale */
+  --sp-8: 8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-40: 40px;
+  --sp-48: 48px;
+  --sp-64: 64px;
+  --sp-80: 80px;
+  --container-max: 1120px; /* match mockups */
+}

@@ -1,0 +1,28 @@
+---
+import "../assets/styles/main.css";
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "nico.ar", description = "Notes on Design & Tech" } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <slot name="header" />
+    <main class="container">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <script src="/bootstrap.bundle.min.js" defer></script>
+  </body>
+</html>
