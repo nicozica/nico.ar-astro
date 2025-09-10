@@ -7,6 +7,27 @@
   display: flex;
   align-items: center;
   gap: var(--sp-16);
+  transition: opacity 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.header__brand:hover {
+  opacity: 0.8;
+  text-decoration: none;
+  color: inherit;
+}
+
+.header__logo {
+  width: 120px;
+  height: 94px;
+}
+
+.header__tagline {
+  font-size: calc(var(--fs-md) * 1px);
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-body);
 }
 
 .header__cta a {
@@ -38,6 +59,15 @@
 .card {
   display: block;
   border: none;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  text-decoration: none;
+  color: inherit;
+  transform: translateY(-2px);
 }
 
 .card__thumb {
@@ -48,20 +78,36 @@
   object-fit: cover;
 }
 
+.card__pills {
+  margin-top: var(--sp-16);
+}
+
 .card__title {
   margin-top: var(--sp-16);
+  color: var(--brand-blue-700);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: calc(var(--fs-lg) * 1px);
+  line-height: 1.2;
+}
+
+.card:hover .card__title {
+  color: var(--link);
 }
 
 .card__meta {
   display: flex;
   gap: var(--sp-16);
   margin: var(--sp-12) 0;
+  font-size: calc(var(--fs-xs) * 1px);
+  color: #6c8096;
 }
 
 .card__excerpt {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: calc(var(--fs-sm) * 1px);
+  line-height: calc(var(--lh-card) * 1px);
   color: #6c8096;
+  margin: var(--sp-8) 0 0 0;
 }
 
 /* Footer */
@@ -70,11 +116,65 @@
   padding: var(--sp-48) 0;
 }
 
+.footer-top h3 {
+  color: var(--brand-blue-700);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  margin-bottom: var(--sp-24);
+}
+
+.footer__links {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--sp-24);
+}
+
+.footer__links li {
+  margin-bottom: var(--sp-12);
+}
+
+.footer__links a {
+  color: var(--text-body);
+  text-decoration: none;
+  font-size: calc(var(--fs-sm) * 1px);
+}
+
+.footer__links a:hover {
+  color: var(--link);
+}
+
+.footer__categories {
+  margin-top: var(--sp-24);
+}
+
+.footer__categories .pills {
+  flex-wrap: wrap;
+}
+
+.footer__social {
+  margin-top: var(--sp-24);
+  display: flex;
+  gap: var(--sp-16);
+}
+
+.footer__social a {
+  color: var(--text-body);
+}
+
+.footer__social a:hover {
+  color: var(--link);
+}
+
 .footer-bottom {
   background: var(--footer-brand);
   color: white;
   text-align: center;
   padding: var(--sp-24) 0;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: calc(var(--fs-sm) * 1px);
 }
 
 /* Paginator */

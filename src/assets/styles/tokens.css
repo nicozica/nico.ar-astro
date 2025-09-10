@@ -38,5 +38,11 @@
   --sp-48: 48px;
   --sp-64: 64px;
   --sp-80: 80px;
-  --container-max: 1120px; /* match mockups */
+  
+  /* Containers */
+  --container-max: 1120px;
+  --container-article: 880px; /* per mockup */
+  
+  /* Radius */
+  --radius-12: 12px;
 }

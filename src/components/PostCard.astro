@@ -38,7 +38,7 @@ const formatDate = (dateString: string): string => {
 };
 ---
 
-<article class="card">
+<a href={`/posts/${post.slug}`} class="card">
   <!-- Article thumbnail -->
   {featuredImage.src ? (
     <img 
@@ -54,7 +54,7 @@ const formatDate = (dateString: string): string => {
   
   <!-- Categories/Pills -->
   {categories.length > 0 && (
-    <div class="pills" style="margin-top: var(--sp-16);">
+    <div class="pills card__pills">
       {categories.slice(0, 3).map(category => (
         <span class="pill">{category.name}</span>
       ))}
@@ -63,20 +63,18 @@ const formatDate = (dateString: string): string => {
   
   <!-- Article title -->
   <h2 class="card__title">
-    <a href={`/posts/${post.slug}`} style="color: inherit; text-decoration: none;">
-      {post.title.rendered}
-    </a>
+    {post.title.rendered}
   </h2>
-  
-  <!-- Meta information -->
-  <div class="card__meta">
-    {authorName && <small>By {authorName}</small>}
-    <small>{formatDate(post.date)}</small>
-    <small>{calculateReadTime(post.excerpt.rendered)}</small>
-  </div>
   
   <!-- Excerpt -->
   <p class="card__excerpt">
     {stripHtml(post.excerpt.rendered)}
   </p>
-</article>
+  
+  <!-- Meta information -->
+  <div class="card__meta">
+    {authorName && <span>Por {authorName}</span>}
+    <span>{formatDate(post.date)}</span>
+    <span>{calculateReadTime(post.excerpt.rendered)} de lectura</span>
+  </div>
+</a>

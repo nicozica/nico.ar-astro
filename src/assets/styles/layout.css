@@ -4,6 +4,11 @@
   padding-inline: var(--sp-16);
 }
 
+.container--article {
+  max-width: var(--container-article);
+  margin: 0 auto;
+}
+
 .section {
   padding: var(--sp-48) 0;
 }

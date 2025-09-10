@@ -1,0 +1,186 @@
+/* Article page specific styles */
+.article-hero {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: var(--radius-12);
+  margin-bottom: var(--sp-32);
+  display: block;
+}
+
+.article-hero--placeholder {
+  background: #E5ECF3;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-12);
+  margin-bottom: var(--sp-32);
+}
+
+.article-pills {
+  margin-bottom: var(--sp-24);
+}
+
+.article-title {
+  color: var(--brand-blue-700);
+  font-family: var(--font-heading);
+  font-size: calc(var(--fs-xxl) * 1px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: var(--sp-12);
+}
+
+.article-meta {
+  display: flex;
+  gap: var(--sp-16);
+  margin-bottom: var(--sp-32);
+  font-size: calc(var(--fs-xs) * 1px);
+  color: #6C8096;
+  line-height: calc(var(--lh-meta) * 1px);
+}
+
+.article-content {
+  font-size: calc(var(--fs-lg) * 1px);
+  line-height: calc(var(--lh-body) * 1px);
+  color: var(--text-body);
+}
+
+.article-content p {
+  margin-bottom: var(--sp-16);
+}
+
+.article-content h2 {
+  color: var(--brand-blue-700);
+  font-family: var(--font-heading);
+  font-size: calc(var(--fs-xl) * 1px);
+  font-weight: 900;
+  margin-top: var(--sp-64);
+  margin-bottom: var(--sp-16);
+}
+
+.article-content h3 {
+  color: var(--brand-blue-700);
+  font-family: var(--font-heading);
+  font-size: calc(var(--fs-lg) * 1px);
+  font-weight: 900;
+  margin-top: var(--sp-32);
+  margin-bottom: var(--sp-16);
+}
+
+.article-content img {
+  display: block;
+  margin: var(--sp-24) auto;
+  max-width: 100%;
+  border-radius: var(--radius-12);
+}
+
+/* WordPress image and caption containers */
+.article-content figure.wp-block-image,
+.article-content .wp-caption {
+  background: #F3F3F3;
+  border-radius: var(--radius-12);
+  padding: var(--sp-16);
+  margin: var(--sp-32) auto;
+  text-align: center;
+  width: auto !important; /* Override WordPress inline widths */
+  max-width: fit-content;
+  display: block;
+}
+
+.article-content figure.wp-block-image img,
+.article-content .wp-caption img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-12);
+}
+
+.article-content figure.wp-block-image figcaption,
+.article-content .wp-caption .wp-caption-text,
+.article-content .wp-element-caption {
+  font-size: calc(var(--fs-sm) * 1px);
+  color: var(--text-body);
+  line-height: 1.5;
+  margin-top: var(--sp-12);
+  margin-bottom: 0;
+  text-align: center;
+  font-style: normal;
+  padding: 0;
+}
+
+/* Handle WordPress caption shortcode specific styles */
+.article-content .wp-caption {
+  display: table; /* WordPress default behavior */
+  table-layout: fixed;
+}
+
+.article-content .wp-caption img {
+  display: block;
+}
+
+/* Regular images without captions keep the original styling */
+.article-content img:not(figure img):not(.wp-caption img) {
+  display: block;
+  margin: var(--sp-24) auto;
+  max-width: 100%;
+  border-radius: var(--radius-12);
+}
+
+/* Responsive adjustments for image containers */
+@media (max-width: 768px) {
+  .article-content figure.wp-block-image,
+  .article-content .wp-caption {
+    margin: var(--sp-24) auto;
+    padding: var(--sp-12);
+  }
+}
+
+.article-content ul,
+.article-content ol {
+  margin-block: var(--sp-16);
+  padding-left: var(--sp-24);
+}
+
+.article-content li {
+  margin-bottom: 6px;
+}
+
+.article-content blockquote {
+  padding: var(--sp-16) var(--sp-24);
+  border-left: 4px solid var(--muted);
+  background: #FAFCFE;
+  border-radius: var(--radius-12);
+  margin: var(--sp-32) 0;
+  font-style: italic;
+  color: #6C8096;
+}
+
+.article-content pre {
+  background: #F7F9FC;
+  padding: var(--sp-16);
+  border-radius: var(--radius-12);
+  overflow: auto;
+  margin: var(--sp-24) 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.article-content code {
+  background: var(--pill-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.article-content pre code {
+  background: none;
+  padding: 0;
+}
+
+.article-content a {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.article-content a:hover {
+  text-decoration: none;
+}

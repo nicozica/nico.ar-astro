@@ -8,11 +8,16 @@ import sanitizeHtml from 'sanitize-html';
 
 // Generate static paths for all posts
 export async function getStaticPaths() {
-  const { items: posts } = await getPosts(1, 100); // Get all posts for static generation
-  return posts.map(post => ({
-    params: { slug: post.slug },
-    props: { post }
-  }));
+  try {
+    const { items: posts } = await getPosts(1, 100); // Get all posts for static generation
+    return posts.map(post => ({
+      params: { slug: post.slug },
+      props: { post }
+    }));
+  } catch (error) {
+    console.error('Error generating static paths:', error);
+    return [];
+  }
 }
 
 const { post } = Astro.props;
@@ -36,12 +41,20 @@ function calculateReadTime(content: string): string {
 // Sanitize HTML content
 function sanitizeContent(html: string): string {
   return sanitizeHtml(html, {
-    allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br'],
+    allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br', 'figure', 'figcaption', 'div'],
     allowedAttributes: {
       'a': ['href', 'target', 'rel'],
-      'img': ['src', 'alt', 'loading', 'decoding']
+      'img': ['src', 'alt', 'loading', 'decoding', 'width', 'height'],
+      'figure': ['class'],
+      'figcaption': ['class'],
+      'div': ['class']
     },
     allowedSchemes: ['http', 'https', 'mailto'],
+    allowedClasses: {
+      'figure': ['wp-block-image', 'wp-caption'],
+      'figcaption': ['wp-element-caption'],
+      'div': ['wp-caption-text']
+    },
     transformTags: {
       'img': function(tagName: string, attribs: any) {
         return {
@@ -84,94 +97,42 @@ const sanitizedContent = sanitizeContent(post.content.rendered);
 >
   <Header slot="header" />
   
-  <article class="section">
+  <article class="section pt-4">
     <!-- Featured image -->
     {featuredImage.src ? (
       <img 
         src={featuredImage.src} 
         alt={featuredImage.alt || post.title.rendered}
-        style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; margin-bottom: var(--sp-32);"
+        class="article-hero"
         loading="lazy"
         decoding="async"
       />
     ) : (
-      <div style="background: #E5ECF3; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: var(--sp-32);"></div>
+      <div class="article-hero--placeholder"></div>
     )}
     
     <!-- Categories -->
     {categories.length > 0 && (
-      <div style="margin-bottom: var(--sp-24);">
+      <div class="article-pills">
         <Pills tags={categories} />
       </div>
     )}
     
     <!-- Article title -->
-    <h1 style="margin-bottom: var(--sp-24);">{post.title.rendered}</h1>
+    <h1 class="article-title">{post.title.rendered}</h1>
     
     <!-- Meta information -->
-    <div style="display: flex; gap: var(--sp-16); margin-bottom: var(--sp-48); font-size: 14px; color: #6C8096;">
+    <div class="article-meta">
       {authorName && <span>By {authorName}</span>}
       <span>{formatDate(post.date)}</span>
       <span>{calculateReadTime(post.content.rendered)}</span>
     </div>
     
     <!-- Article content -->
-    <div class="article-content" set:html={sanitizedContent} />
+    <div class="container--article">
+      <div class="article-content" set:html={sanitizedContent} />
+    </div>
   </article>
   
   <Footer slot="footer" />
 </BaseLayout>
-
-<style>
-  .article-content {
-    font-size: 22px;
-    line-height: 36px;
-  }
-  
-  .article-content p {
-    margin-bottom: var(--sp-24);
-  }
-  
-  .article-content h2 {
-    margin-top: var(--sp-48);
-    margin-bottom: var(--sp-24);
-  }
-  
-  .article-content h3 {
-    margin-top: var(--sp-32);
-    margin-bottom: var(--sp-16);
-  }
-  
-  .article-content img {
-    border-radius: 12px;
-    margin: var(--sp-32) 0;
-  }
-  
-  .article-content blockquote {
-    border-left: 4px solid var(--muted);
-    padding-left: var(--sp-24);
-    margin: var(--sp-32) 0;
-    font-style: italic;
-    color: #6C8096;
-  }
-  
-  .article-content code {
-    background: var(--pill-bg);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.9em;
-  }
-  
-  .article-content pre {
-    background: #f8f9fa;
-    padding: var(--sp-24);
-    border-radius: 8px;
-    overflow-x: auto;
-    margin: var(--sp-24) 0;
-  }
-  
-  .article-content pre code {
-    background: none;
-    padding: 0;
-  }
-</style>
