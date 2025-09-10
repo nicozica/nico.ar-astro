@@ -129,9 +129,7 @@ const sanitizedContent = sanitizeContent(post.content.rendered);
     </div>
     
     <!-- Article content -->
-    <div class="container--article">
-      <div class="article-content" set:html={sanitizedContent} />
-    </div>
+    <div class="article-content" set:html={sanitizedContent} />
   </article>
   
   <Footer slot="footer" />

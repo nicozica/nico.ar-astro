@@ -1,22 +1,26 @@
 /* Article page specific styles */
 .article-hero {
   width: 100%;
+  max-width: var(--container-article); /* 880px consistent width */
+  margin: 0 auto var(--sp-40) auto; /* Center and add bottom spacing */
   aspect-ratio: 16/9;
   object-fit: cover;
   border-radius: var(--radius-12);
-  margin-bottom: var(--sp-32);
   display: block;
 }
 
 .article-hero--placeholder {
   background: #E5ECF3;
+  width: 100%;
+  max-width: var(--container-article); /* 880px consistent width */
+  margin: 0 auto var(--sp-40) auto; /* Center and add bottom spacing */
   aspect-ratio: 16/9;
   border-radius: var(--radius-12);
-  margin-bottom: var(--sp-32);
 }
 
 .article-pills {
-  margin-bottom: var(--sp-24);
+  max-width: var(--container-article); /* 880px consistent width */
+  margin: 0 auto var(--sp-24) auto; /* Center */
 }
 
 .article-title {
@@ -25,22 +29,27 @@
   font-size: calc(var(--fs-xxl) * 1px);
   font-weight: 900;
   line-height: 1.2;
-  margin-bottom: var(--sp-12);
+  margin: 0 auto var(--sp-12) auto; /* Center and consistent spacing */
+  max-width: var(--container-article); /* 880px consistent width */
 }
 
 .article-meta {
   display: flex;
   gap: var(--sp-16);
-  margin-bottom: var(--sp-32);
+  margin: 0 auto var(--sp-40) auto; /* Center and increase bottom spacing to 40px */
+  max-width: var(--container-article); /* 880px consistent width */
   font-size: calc(var(--fs-xs) * 1px);
   color: #6C8096;
   line-height: calc(var(--lh-meta) * 1px);
 }
 
 .article-content {
+  font-family: var(--font-body); /* Figtree Regular */
   font-size: calc(var(--fs-lg) * 1px);
   line-height: calc(var(--lh-body) * 1px);
-  color: var(--text-body);
+  color: var(--text-body); /* #577284 */
+  max-width: var(--container-article); /* 880px consistent width */
+  margin: 0 auto; /* Center the content */
 }
 
 .article-content p {
@@ -48,20 +57,20 @@
 }
 
 .article-content h2 {
-  color: var(--brand-blue-700);
-  font-family: var(--font-heading);
+  color: var(--brand-blue-700); /* #21346A */
+  font-family: var(--font-heading); /* Fraunces Black */
   font-size: calc(var(--fs-xl) * 1px);
   font-weight: 900;
-  margin-top: var(--sp-64);
+  margin-top: var(--sp-64); /* 64px between sections */
   margin-bottom: var(--sp-16);
 }
 
 .article-content h3 {
-  color: var(--brand-blue-700);
-  font-family: var(--font-heading);
+  color: var(--brand-blue-700); /* #21346A */
+  font-family: var(--font-heading); /* Fraunces Black */
   font-size: calc(var(--fs-lg) * 1px);
   font-weight: 900;
-  margin-top: var(--sp-32);
+  margin-top: var(--sp-40); /* Slightly less spacing for h3 */
   margin-bottom: var(--sp-16);
 }
 
@@ -78,10 +87,10 @@
   background: #F3F3F3;
   border-radius: var(--radius-12);
   padding: var(--sp-16);
-  margin: var(--sp-32) auto;
+  margin: var(--sp-64) auto; /* Consistent 64px spacing between sections */
   text-align: center;
   width: auto !important; /* Override WordPress inline widths */
-  max-width: fit-content;
+  max-width: var(--container-article); /* 880px consistent width */
   display: block;
 }
 
@@ -97,13 +106,15 @@
 .article-content figure.wp-block-image figcaption,
 .article-content .wp-caption .wp-caption-text,
 .article-content .wp-element-caption {
-  font-size: calc(var(--fs-sm) * 1px);
-  color: var(--text-body);
+  font-family: var(--font-body); /* Figtree Regular */
+  font-size: calc(var(--fs-sm) * 1px); /* 16px */
+  color: var(--text-body); /* #577284 */
   line-height: 1.5;
   margin-top: var(--sp-12);
   margin-bottom: 0;
   text-align: center;
   font-style: normal;
+  font-weight: 400;
   padding: 0;
 }
 
@@ -120,17 +131,32 @@
 /* Regular images without captions keep the original styling */
 .article-content img:not(figure img):not(.wp-caption img) {
   display: block;
-  margin: var(--sp-24) auto;
+  margin: var(--sp-64) auto; /* Consistent 64px spacing between sections */
   max-width: 100%;
   border-radius: var(--radius-12);
 }
 
 /* Responsive adjustments for image containers */
 @media (max-width: 768px) {
+  .article-hero,
+  .article-hero--placeholder,
+  .article-pills,
+  .article-title,
+  .article-meta {
+    max-width: calc(100vw - var(--sp-32)); /* Account for page padding on mobile */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
   .article-content figure.wp-block-image,
   .article-content .wp-caption {
-    margin: var(--sp-24) auto;
+    margin: var(--sp-40) auto; /* Reduced spacing on mobile */
     padding: var(--sp-12);
+    max-width: calc(100vw - var(--sp-32));
+  }
+  
+  .article-content img:not(figure img):not(.wp-caption img) {
+    margin: var(--sp-40) auto; /* Reduced spacing on mobile */
   }
 }
 

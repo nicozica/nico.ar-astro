@@ -66,8 +66,6 @@
 
 .card:hover {
   text-decoration: none;
-  color: inherit;
-  transform: translateY(-2px);
 }
 
 .card__thumb {
