@@ -1,4 +1,7 @@
 ---
+// Disable prerender to allow query params to work in runtime
+export const prerender = false;
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';

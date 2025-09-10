@@ -10,9 +10,10 @@ const { currentPage, totalPages, baseUrl = '' } = Astro.props;
 const prevPage = currentPage > 1 ? currentPage - 1 : null;
 const nextPage = currentPage < totalPages ? currentPage + 1 : null;
 
+// Fix: Always include ?page= parameter for consistent navigation
 const getPageUrl = (page: number) => {
-  if (page === 1) return baseUrl || '/';
-  return `${baseUrl}?page=${page}`;
+  if (page === 1) return `${baseUrl}/?page=1`;
+  return `${baseUrl}/?page=${page}`;
 };
 ---
 
