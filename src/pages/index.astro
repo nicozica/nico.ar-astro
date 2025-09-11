@@ -4,19 +4,19 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PostCard from '../components/PostCard.astro';
 import Paginator from '../components/Paginator.astro';
-import { getPosts } from '../data/wp.ts';
+import { getPosts } from '../data/wp';
 
 // Get first page of posts for homepage
 const postsPerPage = 6;
-const { items: posts, totalPages } = await getPosts(1, postsPerPage);
 const currentPage = 1;
+const { items: posts, totalPages } = await getPosts({ page: currentPage, perPage: postsPerPage });
 ---
 
 <BaseLayout title="nico.ar - Notes on Design & Tech" description="Personal blog about design, technology, and user experience by Nicolas from Buenos Aires.">
   <Header slot="header" />
   
-  <div class="section">
-    <div class="row">
+  <div class="section py-2 mt-2">
+    <div class="row posts-grid">
       {posts.map(post => (
         <div class="col-12 col-md-6 mb-4">
           <PostCard post={post} />
@@ -26,7 +26,8 @@ const currentPage = 1;
     
     <Paginator 
       currentPage={currentPage} 
-      totalPages={totalPages} 
+      totalPages={totalPages}
+      baseUrl="/page"
     />
   </div>
   

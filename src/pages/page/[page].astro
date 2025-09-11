@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import Paginator from '../../components/Paginator.astro';
+import { getPosts, type WPPost } from '../../data/wp';
+
+export async function getStaticPaths() {
+  const postsPerPage = 6;
+  
+  // Get total number of posts to calculate total pages
+  const { totalPages } = await getPosts({ page: 1, perPage: postsPerPage });
+  
+  // Generate paths for all pages (starting from page 2, since page 1 is handled by index.astro)
+  const paths: Array<{
+    params: { page: string };
+    props: { posts: WPPost[]; currentPage: number; totalPages: number };
+  }> = [];
+  
+  for (let page = 2; page <= totalPages; page++) {
+    const { items: posts } = await getPosts({ page, perPage: postsPerPage });
+    paths.push({
+      params: { page: page.toString() },
+      props: { posts, currentPage: page, totalPages }
+    });
+  }
+  
+  return paths;
+}
+
+interface Props {
+  posts: WPPost[];
+  currentPage: number;
+  totalPages: number;
+}
+
+const { posts, currentPage, totalPages } = Astro.props as Props;
+---
+
+<BaseLayout title={`Page ${currentPage} - nico.ar - Notes on Design & Tech`} description="Personal blog about design, technology, and user experience by Nicolas from Buenos Aires.">
+  <Header slot="header" />
+  
+  <div class="section py-2 mt-2">
+    <div class="row posts-grid">
+      {posts.map(post => (
+        <div class="col-12 col-md-6 mb-4">
+          <PostCard post={post} />
+        </div>
+      ))}
+    </div>
+    
+    <Paginator 
+      currentPage={currentPage} 
+      totalPages={totalPages}
+      baseUrl="/page"
+    />
+  </div>
+  
+  <Footer slot="footer" />
+</BaseLayout>

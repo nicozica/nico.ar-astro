@@ -2,6 +2,8 @@
 import type { WPPost } from '../data/wp.ts';
 import { getFeatured } from '../data/wp.ts';
 import { formatDateEn, computeReadingTime, getExcerpt } from '../lib/utils.ts';
+import CalendarIcon from '../assets/images/icon-calendar.svg?raw';
+import ClockIcon from '../assets/images/icon-clock.svg?raw';
 
 export interface Props {
   post: WPPost;
@@ -54,9 +56,14 @@ const excerpt = getExcerpt(post.excerpt.rendered || post.content.rendered, 180);
   
   <!-- Meta information BELOW title -->
   <div class="card__meta">
-    <time datetime={post.date}>{formatDateEn(post.date)}</time>
-    <span class="meta-sep">·</span>
-    <span class="meta-read">{readingTime} min</span>
+    <span class="meta-item">
+      <Fragment set:html={CalendarIcon} />
+      <time datetime={post.date}>{formatDateEn(post.date)}</time>
+    </span>
+    <span class="meta-item">
+      <Fragment set:html={ClockIcon} />
+      <span class="meta-read">{readingTime} min</span>
+    </span>
   </div>
   
   <!-- Excerpt -->

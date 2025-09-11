@@ -31,7 +31,7 @@ const listUrl = (page = 1, perPage = 6) =>
 const bySlugUrl = (slug: string) => 
   `${BASE}/posts?slug=${slug}&_embed&status=publish`;
 
-export async function getPosts(page = 1, perPage = 6): Promise<WPList<WPPost>> {
+export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPage?: number } = {}): Promise<WPList<WPPost>> {
   if (!BASE) {
     console.warn('PUBLIC_WP_BASE not configured, using mock data');
     return { items: getMockPosts(), totalPages: 2 };

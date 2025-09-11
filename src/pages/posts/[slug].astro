@@ -9,7 +9,7 @@ import sanitizeHtml from 'sanitize-html';
 // Generate static paths for all posts
 export async function getStaticPaths() {
   try {
-    const { items: posts } = await getPosts(1, 100); // Get all posts for static generation
+    const { items: posts } = await getPosts({ page: 1, perPage: 100 }); // Get all posts for static generation
     return posts.map(post => ({
       params: { slug: post.slug },
       props: { post }

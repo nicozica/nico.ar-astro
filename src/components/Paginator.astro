@@ -5,52 +5,48 @@ export interface Props {
   baseUrl?: string;
 }
 
-const { currentPage, totalPages, baseUrl = '' } = Astro.props;
+const { currentPage, totalPages, baseUrl } = Astro.props;
 
 const prevPage = currentPage > 1 ? currentPage - 1 : null;
 const nextPage = currentPage < totalPages ? currentPage + 1 : null;
 
 const getPageUrl = (page: number) => {
-  // For static generation, disable pagination for now
-  // In future, you could generate separate pages like /page/2/, etc.
-  return '#'; // Disabled for static generation
+  if (page === 1) {
+    return '/';
+  }
+  if (baseUrl === '/page') {
+    return `/page/${page}`;
+  }
+  return `/?page=${page}`;
 };
 ---
 
 {totalPages > 1 && (
-  <div class="paginator">
-    <!-- Previous arrow -->
+  <div class="paginator mt-5">
+    <!-- Newer Posts (Previous) -->
     {prevPage ? (
-      <a href={getPageUrl(prevPage)} class="paginator__arrow" aria-label="Previous page">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-        </svg>
+      <a href={getPageUrl(prevPage)} class="paginator__link paginator__newer">
+        ← Newer Posts
       </a>
     ) : (
-      <span class="paginator__arrow" style="opacity: 0.3; cursor: not-allowed;">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-        </svg>
+      <span class="paginator__link paginator__newer paginator__disabled">
+        ← Newer Posts
       </span>
     )}
     
     <!-- Current page indicator -->
     <span class="paginator__current">
-      {String(currentPage).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
+      {currentPage} of {totalPages}
     </span>
     
-    <!-- Next arrow -->
+    <!-- Older Posts (Next) -->
     {nextPage ? (
-      <a href={getPageUrl(nextPage)} class="paginator__arrow" aria-label="Next page">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-        </svg>
+      <a href={getPageUrl(nextPage)} class="paginator__link paginator__older">
+        Older Posts →
       </a>
     ) : (
-      <span class="paginator__arrow" style="opacity: 0.3; cursor: not-allowed;">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-        </svg>
+      <span class="paginator__link paginator__older paginator__disabled">
+        Older Posts →
       </span>
     )}
   </div>
