@@ -85,27 +85,39 @@
   color: var(--brand-blue-700);
   font-family: var(--font-heading);
   font-weight: 900;
-  font-size: calc(var(--fs-lg) * 1px);
+  font-size: calc(var(--fs-xl) * 1px);
   line-height: 1.2;
-}
-
-.card:hover .card__title {
-  color: var(--link);
 }
 
 .card__meta {
   display: flex;
-  gap: var(--sp-16);
-  margin: var(--sp-12) 0;
-  font-size: calc(var(--fs-xs) * 1px);
-  color: #6c8096;
+  align-items: center;
+  gap: var(--sp-8);
+  margin: var(--sp-12) 0 var(--sp-16) 0;
+  font-size: 16px;
+  color: #577284;
+}
+
+.meta-sep {
+  color: #577284;
+  font-weight: normal;
 }
 
 .card__excerpt {
-  font-size: calc(var(--fs-sm) * 1px);
-  line-height: calc(var(--lh-card) * 1px);
+  font-size: 16px;
+  line-height: 24px;
   color: #6c8096;
-  margin: var(--sp-8) 0 0 0;
+  margin: 0;
+  
+  /* CSS line clamping for extra safety */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  
+  /* Fallback for browsers that don't support line-clamp */
+  max-height: calc(24px * 3); /* 3 lines */
 }
 
 /* Footer */

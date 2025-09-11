@@ -1,6 +1,7 @@
 ---
 import type { WPPost } from '../data/wp.ts';
-import { getFeatured, getAuthor } from '../data/wp.ts';
+import { getFeatured } from '../data/wp.ts';
+import { formatDateEn, computeReadingTime, getExcerpt } from '../lib/utils.ts';
 
 export interface Props {
   post: WPPost;
@@ -8,34 +9,19 @@ export interface Props {
 
 const { post } = Astro.props;
 
-// Function to strip HTML tags from excerpt
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
-}
-
-// Function to calculate read time (approximate)
-function calculateReadTime(content: string): string {
-  const wordCount = stripHtml(content).split(/\s+/).length;
-  const readTime = Math.ceil(wordCount / 200); // 200 words per minute
-  return `${readTime} min`;
-}
-
 // Get categories from embedded data
 const categories = post._embedded?.['wp:term']?.[0] || [];
 
-// Get featured image and author using helper functions
+// Get featured image using helper function
 const featuredImage = getFeatured(post);
-const authorName = getAuthor(post);
 
-// Format date
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  });
-};
+// Calculate reading time from content
+const readingTime = computeReadingTime(post.content.rendered);
+
+// Get clean excerpt with responsive length
+// Desktop: ~220 chars, Tablet: ~180, Mobile: ~140
+// We'll use 180 as a good middle ground and let CSS handle the rest
+const excerpt = getExcerpt(post.excerpt.rendered || post.content.rendered, 180);
 ---
 
 <a href={`/posts/${post.slug}`} class="card">
@@ -66,15 +52,15 @@ const formatDate = (dateString: string): string => {
     {post.title.rendered}
   </h2>
   
+  <!-- Meta information BELOW title -->
+  <div class="card__meta">
+    <time datetime={post.date}>{formatDateEn(post.date)}</time>
+    <span class="meta-sep">·</span>
+    <span class="meta-read">{readingTime} min</span>
+  </div>
+  
   <!-- Excerpt -->
   <p class="card__excerpt">
-    {stripHtml(post.excerpt.rendered)}
+    {excerpt}
   </p>
-  
-  <!-- Meta information -->
-  <div class="card__meta">
-    {authorName && <span>Por {authorName}</span>}
-    <span>{formatDate(post.date)}</span>
-    <span>{calculateReadTime(post.excerpt.rendered)} de lectura</span>
-  </div>
 </a>
