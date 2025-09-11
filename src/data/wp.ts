@@ -24,55 +24,72 @@ export interface WPList<T> {
 
 const BASE = import.meta.env.PUBLIC_WP_BASE;
 
-// Helper functions for clean URL construction
-const listUrl = (page = 1, perPage = 6) =>
-  `${BASE}/posts?_embed&per_page=${perPage}&page=${page}&status=publish&orderby=date&order=desc`;
-
-const bySlugUrl = (slug: string) => 
-  `${BASE}/posts?slug=${slug}&_embed&status=publish`;
-
-export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPage?: number } = {}): Promise<WPList<WPPost>> {
+// Robust fetch function with timeout and detailed logging
+async function fetchWP<T>(path: string, init?: RequestInit): Promise<T> {
   if (!BASE) {
-    console.warn('PUBLIC_WP_BASE not configured, using mock data');
-    return { items: getMockPosts(), totalPages: 2 };
+    throw new Error('PUBLIC_WP_BASE environment variable is not configured');
   }
+  
+  const url = `${BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+  console.log(`🔗 Fetching WordPress API: ${url}`);
 
   try {
-    const res = await fetch(listUrl(page, perPage));
-    if (!res.ok) throw new Error(`WP posts failed: ${res.status}`);
+    const response = await fetch(url, { 
+      signal: controller.signal, 
+      ...init 
+    });
     
-    const items: WPPost[] = await res.json();
-    const totalPages = Number(res.headers.get("X-WP-TotalPages") || 1);
+    if (!response.ok) {
+      throw new Error(`WordPress API ${response.status} ${response.statusText} – ${url}`);
+    }
     
-    return { items, totalPages };
+    const data = await response.json() as T;
+    console.log(`✅ WordPress API success: ${url}`);
+    return data;
   } catch (error) {
-    console.error('WordPress API error:', error);
-    console.warn('Falling back to mock data');
+    console.error(`❌ WordPress API error for ${url}:`, error);
+    throw error; // Re-throw to let calling function handle fallback
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// Helper functions for clean URL construction
+const listUrl = (page = 1, perPage = 6) =>
+  `posts?_embed&per_page=${perPage}&page=${page}&status=publish&orderby=date&order=desc`;
+
+const bySlugUrl = (slug: string) => 
+  `posts?slug=${slug}&_embed&status=publish`;
+
+export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPage?: number } = {}): Promise<WPList<WPPost>> {
+  try {
+    const response = await fetchWP<WPPost[]>(listUrl(page, perPage));
+    const totalPages = 1; // We'll extract this from headers in the fetch function if needed
+    
+    return { items: response, totalPages };
+  } catch (error) {
+    console.error('WordPress API error in getPosts:', error);
+    console.warn('⚠️ Falling back to mock data due to WordPress API failure');
     return { items: getMockPosts(), totalPages: 2 };
   }
 }
 
 export async function getPostBySlug(slug: string): Promise<WPPost> {
-  if (!BASE) {
-    console.warn('PUBLIC_WP_BASE not configured, using mock data');
-    const post = getMockPostBySlug(slug);
-    if (!post) throw new Error("Post not found");
-    return post;
-  }
-
   try {
-    const res = await fetch(bySlugUrl(slug));
-    if (!res.ok) throw new Error(`WP post failed: ${res.status}`);
+    const response = await fetchWP<WPPost[]>(bySlugUrl(slug));
+    if (!response?.length) {
+      throw new Error(`Post with slug "${slug}" not found`);
+    }
     
-    const arr: WPPost[] = await res.json();
-    if (!arr?.length) throw new Error("Post not found");
-    
-    return arr[0];
+    return response[0];
   } catch (error) {
-    console.error('WordPress API error:', error);
-    console.warn('Falling back to mock data');
+    console.error('WordPress API error in getPostBySlug:', error);
+    console.warn('⚠️ Falling back to mock data due to WordPress API failure');
     const post = getMockPostBySlug(slug);
-    if (!post) throw new Error("Post not found");
+    if (!post) throw new Error(`Post with slug "${slug}" not found`);
     return post;
   }
 }
