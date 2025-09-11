@@ -25,7 +25,7 @@ export interface WPList<T> {
 const BASE = import.meta.env.PUBLIC_WP_BASE;
 
 // Robust fetch function with timeout and detailed logging
-async function fetchWP<T>(path: string, init?: RequestInit): Promise<T> {
+async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; headers: Headers }> {
   if (!BASE) {
     throw new Error('PUBLIC_WP_BASE environment variable is not configured');
   }
@@ -48,7 +48,7 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<T> {
     
     const data = await response.json() as T;
     console.log(`✅ WordPress API success: ${url}`);
-    return data;
+    return { data, headers: response.headers };
   } catch (error) {
     console.error(`❌ WordPress API error for ${url}:`, error);
     throw error; // Re-throw to let calling function handle fallback
@@ -66,8 +66,10 @@ const bySlugUrl = (slug: string) =>
 
 export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPage?: number } = {}): Promise<WPList<WPPost>> {
   try {
-    const response = await fetchWP<WPPost[]>(listUrl(page, perPage));
-    const totalPages = 1; // We'll extract this from headers in the fetch function if needed
+    const { data: response, headers } = await fetchWP<WPPost[]>(listUrl(page, perPage));
+    const totalPages = Number(headers.get("X-WP-TotalPages") || 1);
+    
+    console.log(`📄 Got ${response.length} posts, total pages: ${totalPages}`);
     
     return { items: response, totalPages };
   } catch (error) {
@@ -79,7 +81,7 @@ export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPa
 
 export async function getPostBySlug(slug: string): Promise<WPPost> {
   try {
-    const response = await fetchWP<WPPost[]>(bySlugUrl(slug));
+    const { data: response } = await fetchWP<WPPost[]>(bySlugUrl(slug));
     if (!response?.length) {
       throw new Error(`Post with slug "${slug}" not found`);
     }
