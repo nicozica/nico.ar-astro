@@ -1,0 +1,62 @@
+/* About page specific styles */
+
+/* Custom max-width for About page only */
+.about-content {
+  max-width: 720px; /* Reduced from 880px */
+  margin: 0 auto;
+}
+
+/* Custom title size and alignment for About page only */
+.about-title {
+  font-size: calc(var(--fs-xxl) * 1.25px); /* Increased from 32px to 40px */
+  max-width: 720px; /* Match content width */
+  margin: 0 auto var(--sp-12) auto; /* Align with content */
+}
+
+/* Custom h2 size and alignment for About page only */
+.about-content h2 {
+  font-size: calc(var(--fs-xl) * 1.25px); /* Increased from 24px to 30px */
+  max-width: 720px; /* Match content width */
+  margin: var(--sp-64) auto var(--sp-16) auto; /* Align with content */
+}
+
+.about-links {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--sp-64); /* Consistent spacing before image */
+}
+
+.about-links li {
+  margin-bottom: var(--sp-16);
+}
+
+.about-links a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.about-links a:hover {
+  text-decoration: underline;
+}
+
+.about-links .text-muted {
+  color: #7a90a4;
+}
+
+.about-figure {
+  background: #F3F3F3;
+  border-radius: var(--radius-12);
+  padding: var(--sp-16);
+  margin: var(--sp-64) auto; /* Consistent 64px spacing between sections */
+  text-align: center;
+  width: auto !important;
+  max-width: 720px; /* Match the reduced content width */
+  display: block;
+}
+
+.about-figure img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  border-radius: var(--radius-12);
+}

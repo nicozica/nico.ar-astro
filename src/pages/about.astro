@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../assets/styles/about.css';
+
+const title = 'About me · nico.ar';
+const description = 'Product designer & tinkerer. Notes on design, tech and day-to-day work.';
+---
+
+<BaseLayout 
+  title={title}
+  description={description}
+>
+  <Header slot="header" />
+  
+  <article class="section pt-4 mt-xxl-4">
+    <!-- Page title -->
+    <h1 class="article-title about-title">About me</h1>
+    
+    <!-- Main content -->
+    <div class="article-content about-content">
+      <p>
+        Hi there! I'm Nicolás Zicarelli, a Multimedia Designer born in Salto, Argentina. Since my childhood, I've developed a deep interest in design, media, and technology.
+      </p>
+      
+      <p>
+        I've launched this blog to share the notes and thoughts I take for my day-to-day work and personal projects. Things that I usually keep for personal record but could also be useful for someone else. Here you'll find articles about design (UI/UX, branding), front-end development, and some tales about hardware and Internet-related stuff.
+      </p>
+      
+      <p>
+        I host this blog from home, which means there might be occasional downtimes during power outages. Additionally, the blog uses Cloudflare infrastructure to enhance reliability and performance.
+      </p>
+      
+      <p>
+        I'm based in the city of Buenos Aires and work as a Product Designer at Ipsos Argentina.
+      </p>
+
+      <h2>Featured links</h2>
+      
+      <ul class="about-links">
+        <li>
+          <a href="https://argensonix.com.ar" target="_blank" rel="noopener noreferrer">
+            Argensonix Multimedia
+          </a>
+          <span class="text-muted"> → personal brand portfolio.</span>
+        </li>
+        <li>
+          <a href="https://blur.fm" target="_blank" rel="noopener noreferrer">
+            Blur FM
+          </a>
+          <span class="text-muted"> → a commercial-free online radio. My playground for experimentation.</span>
+        </li>
+        <li>
+          <a href="https://lodelnico.com.ar" target="_blank" rel="noopener noreferrer">
+            Lo del Nico
+          </a>
+          <span class="text-muted"> → my personal photoblog.</span>
+        </li>
+      </ul>
+
+        <!-- Profile image -->
+        <img 
+            src="/src/assets/images/about-me.png"
+            alt="Photo of Nicolás Zicarelli"
+            class="img-fluid"
+            loading="lazy"
+            decoding="async"
+        />
+
+    </div>
+  </article>
+
+  <Footer slot="footer" />
+</BaseLayout>
