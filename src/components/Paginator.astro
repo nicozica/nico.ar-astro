@@ -23,15 +23,11 @@ const getPageUrl = (page: number) => {
 
 {totalPages > 1 && (
   <div class="paginator mt-5">
-    <!-- Newer Posts (Previous) -->
-    {prevPage ? (
+    <!-- Newer Posts (Previous) - only show if there's a previous page -->
+    {prevPage && (
       <a href={getPageUrl(prevPage)} class="paginator__link paginator__newer">
         ← Newer Posts
       </a>
-    ) : (
-      <span class="paginator__link paginator__newer paginator__disabled">
-        ← Newer Posts
-      </span>
     )}
     
     <!-- Current page indicator -->
@@ -39,15 +35,11 @@ const getPageUrl = (page: number) => {
       {currentPage} of {totalPages}
     </span>
     
-    <!-- Older Posts (Next) -->
-    {nextPage ? (
+    <!-- Older Posts (Next) - only show if there's a next page -->
+    {nextPage && (
       <a href={getPageUrl(nextPage)} class="paginator__link paginator__older">
         Older Posts →
       </a>
-    ) : (
-      <span class="paginator__link paginator__older paginator__disabled">
-        Older Posts →
-      </span>
     )}
   </div>
 )}

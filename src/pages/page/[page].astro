@@ -42,7 +42,7 @@ const { posts, currentPage, totalPages } = Astro.props as Props;
   <Header slot="header" />
   
   <div class="section py-2 mt-2">
-    <div class="row posts-grid">
+    <div class="row posts-grid gx-md-60 gy-4">
       {posts.map(post => (
         <div class="col-12 col-md-6 mb-4">
           <PostCard post={post} />

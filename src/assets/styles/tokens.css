@@ -16,8 +16,8 @@
     sans-serif;
 
   /* Type scale (px) */
-  --fs-xxl: 64;
-  --fs-xl: 32;
+  --fs-xxl: 32;
+  --fs-xl: 24;
   --fs-lg: 22;
   --fs-md: 20;
   --fs-sm: 16;
@@ -40,7 +40,7 @@
   --sp-80: 80px;
   
   /* Containers */
-  --container-max: 1120px;
+  --container-max: 1200px;
   --container-article: 880px; /* per mockup */
   
   /* Radius */

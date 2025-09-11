@@ -12,3 +12,21 @@
 @import './layout.css';
 @import './components.css';
 @import './article.css';
+
+/* Custom Bootstrap utilities */
+/* 60px gutter between columns for posts grid */
+.gx-60 { 
+  --bs-gutter-x: 60px; 
+}
+
+/* Responsive version (60px only from md and up) */
+@media (min-width: 768px) {
+  .gx-md-60 { 
+    --bs-gutter-x: 60px; 
+  }
+}
+
+/* Optional: custom vertical spacing */
+.gy-32 { 
+  --bs-gutter-y: 32px; 
+}
