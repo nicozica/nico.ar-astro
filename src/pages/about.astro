@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../assets/styles/about.css';
+import AboutMeImage from '../assets/images/about-me.png';
 
 const title = 'About me · nico.ar';
 const description = 'Product designer & tinkerer. Notes on design, tech and day-to-day work.';
@@ -59,14 +60,18 @@ const description = 'Product designer & tinkerer. Notes on design, tech and day-
         </li>
       </ul>
 
-        <!-- Profile image -->
+      <!-- Profile image -->
+      <figure class="about-figure">
         <img 
-            src="/src/assets/images/about-me.png"
-            alt="Photo of Nicolás Zicarelli"
-            class="img-fluid"
-            loading="lazy"
-            decoding="async"
+          src={AboutMeImage.src}
+          width={AboutMeImage.width}
+          height={AboutMeImage.height}
+          alt="Photo of Nicolás Zicarelli"
+          class="img-fluid"
+          loading="lazy"
+          decoding="async"
         />
+      </figure>
 
     </div>
   </article>

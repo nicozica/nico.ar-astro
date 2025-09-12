@@ -44,15 +44,26 @@
 /* Pills */
 .pills {
   display: flex;
-  gap: var(--sp-8);
+  gap: var(--sp-8); /* 8px gaps between pills for consistent visual rhythm */
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .pill {
-  background: var(--pill-bg);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: calc(var(--fs-xs) * 1px);
-  color: #60697b;
+  background: var(--pill-bg); /* Keep soft background for subtle appearance */
+  border-radius: 999px; /* Rounded pills shape */
+  padding: 4px 10px; /* Consistent internal padding */
+  font-size: calc(var(--fs-xs) * 1px); /* Base: 14px */
+  font-weight: 500; /* Medium weight for better readability */
+  color: #292E3F; /* New darker text color for better contrast */
+  border: 1px solid rgba(41, 46, 63, 0.1); /* Soft border for definition */
+  transition: background-color 0.2s ease;
+}
+
+/* XXL desktop breakpoint - maintain 14px font size specification */
+@media (min-width: 1400px) {
+  .pill {
+    font-size: 14px; /* Explicit 14px for XXL desktop as requested */
+  }
 }
 
 /* Cards */

@@ -5,17 +5,71 @@ import Footer from '../../components/Footer.astro';
 import Pills from '../../components/Pills.astro';
 import { getPostBySlug, getPosts, getFeatured, getAuthor } from '../../data/wp.ts';
 import sanitizeHtml from 'sanitize-html';
+import CalendarIcon from '../../assets/images/icon-calendar.svg';
+import ClockIcon from '../../assets/images/icon-clock.svg';
 
 // Generate static paths for all posts
 export async function getStaticPaths() {
   try {
-    const { items: posts } = await getPosts({ page: 1, perPage: 100 }); // Get all posts for static generation
-    return posts.map(post => ({
-      params: { slug: post.slug },
-      props: { post }
-    }));
+    console.log('🔄 Generating static paths for all posts...');
+    
+    // First try to get posts from the API
+    let allPosts: any[] = [];
+    
+    try {
+      const { items: posts } = await getPosts({ page: 1, perPage: 100 });
+      allPosts = posts;
+      console.log(`✅ Successfully fetched ${allPosts.length} posts from WordPress API`);
+    } catch (apiError) {
+      console.log('⚠️ WordPress API failed, using fallback method...');
+      
+      // Fallback: try to get individual posts by known slugs
+      const knownSlugs = [
+        'rethinking-mfa-what-happens-when-the-user-sends-the-code',
+        'the-linux-designer',
+        'the-psychology-of-the-web',
+        'the-future-of-user-authentication-biometrics-vs-passkeys',
+        'the-importance-of-digital-product-design',
+        'transitioning-from-cloud-hosting-to-self-hosting',
+        'my-home-network-from-anywhere-with-openvpn',
+        'making-animations-for-the-web-with-lottie',
+        'moderating-user-generated-content',
+        'change-by-design-key-takeaways'
+      ];
+      
+      for (const slug of knownSlugs) {
+        try {
+          const post = await getPostBySlug(slug);
+          if (post) {
+            allPosts.push(post);
+            console.log(`✅ Successfully fetched post: ${slug}`);
+          }
+        } catch (error) {
+          console.log(`⚠️ Failed to fetch post: ${slug}`);
+        }
+      }
+      
+      console.log(`✅ Fallback method fetched ${allPosts.length} posts`);
+    }
+    
+    if (allPosts.length === 0) {
+      console.log('❌ No posts found, returning empty array');
+      return [];
+    }
+    
+    const paths = allPosts.map(post => {
+      console.log(`🔗 Generating path for slug: ${post.slug}`);
+      return {
+        params: { slug: post.slug },
+        props: { post }
+      };
+    });
+    
+    console.log(`✅ Generated ${paths.length} static paths`);
+    return paths;
+    
   } catch (error) {
-    console.error('Error generating static paths:', error);
+    console.error('❌ Error generating static paths:', error);
     return [];
   }
 }
@@ -44,16 +98,17 @@ function sanitizeContent(html: string): string {
     allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br', 'figure', 'figcaption', 'div'],
     allowedAttributes: {
       'a': ['href', 'target', 'rel'],
-      'img': ['src', 'alt', 'loading', 'decoding', 'width', 'height'],
+      'img': ['src', 'alt', 'loading', 'decoding', 'width', 'height', 'class', 'data-caption', 'title'],
       'figure': ['class'],
-      'figcaption': ['class'],
+      'figcaption': ['class', 'role'],
       'div': ['class']
     },
     allowedSchemes: ['http', 'https', 'mailto'],
     allowedClasses: {
-      'figure': ['wp-block-image', 'wp-caption'],
-      'figcaption': ['wp-element-caption'],
-      'div': ['wp-caption-text']
+      'figure': ['wp-block-image', 'wp-caption', 'media-figure'],
+      'figcaption': ['wp-element-caption', 'media-caption', 'figure-caption', 'mb-2'],
+      'div': ['wp-caption-text', 'media-box'],
+      'img': ['img-fluid', 'd-block', 'my-1']
     },
     transformTags: {
       'img': function(tagName: string, attribs: any) {
@@ -62,12 +117,83 @@ function sanitizeContent(html: string): string {
           attribs: {
             ...attribs,
             loading: 'lazy',
-            decoding: 'async'
+            decoding: 'async',
+            class: 'img-fluid d-block my-1'
           }
         };
       }
     }
   });
+}
+
+// Transform WordPress figure markup to exact media-figure system
+function transformMediaFigures(html: string): string {
+  let result = html;
+  
+  // Transform WordPress figures to media-figure system
+  result = result.replace(
+    /<figure class="wp-block-image[^"]*"([^>]*)>(.*?)<\/figure>/gs,
+    (match, figureAttribs, content) => {
+      // Extract image and figcaption separately
+      const imgMatch = content.match(/<img([^>]*)>/);
+      const figcaptionMatch = content.match(/<figcaption[^>]*>(.*?)<\/figcaption>/s);
+      
+      if (!imgMatch) return match; // No image found, return original
+      
+      const imgAttribs = imgMatch[1];
+      let figcaptionContent = '';
+      
+      if (figcaptionMatch) {
+        figcaptionContent = `<figcaption class="media-caption figure-caption mb-2" role="note">${figcaptionMatch[1]}</figcaption>`;
+      } else {
+        // Check if image has data-caption or title attribute for auto-caption
+        const dataCaptionMatch = imgAttribs.match(/data-caption="([^"]*)"/);
+        const titleMatch = imgAttribs.match(/title="([^"]*)"/);
+        
+        if (dataCaptionMatch) {
+          figcaptionContent = `<figcaption class="media-caption figure-caption mb-2" role="note">${dataCaptionMatch[1]}</figcaption>`;
+        } else if (titleMatch) {
+          figcaptionContent = `<figcaption class="media-caption figure-caption mb-2" role="note">${titleMatch[1]}</figcaption>`;
+        }
+      }
+      
+      return `<figure class="media-figure">
+  <div class="media-box">
+    <img class="img-fluid d-block my-1"${imgAttribs}>
+    ${figcaptionContent}
+  </div>
+</figure>`;
+    }
+  );
+  
+  // Handle standalone images (not in figures) that have captions
+  result = result.replace(
+    /<img([^>]*(?:data-caption|title)="[^"]*"[^>]*)>/g,
+    (match, imgAttribs) => {
+      const dataCaptionMatch = imgAttribs.match(/data-caption="([^"]*)"/);
+      const titleMatch = imgAttribs.match(/title="([^"]*)"/);
+      
+      let captionText = '';
+      if (dataCaptionMatch) {
+        captionText = dataCaptionMatch[1];
+      } else if (titleMatch) {
+        captionText = titleMatch[1];
+      }
+      
+      if (captionText) {
+        return `<figure class="media-figure">
+  <div class="media-box">
+    <img class="img-fluid d-block my-1"${imgAttribs}>
+    <figcaption class="media-caption figure-caption mb-2" role="note">${captionText}</figcaption>
+  </div>
+</figure>`;
+      }
+      
+      return match;
+    }
+  );
+  
+  return result;
 }
 
 // Get categories from embedded data
@@ -88,7 +214,18 @@ const formatDate = (dateString: string): string => {
 };
 
 const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
-const sanitizedContent = sanitizeContent(post.content.rendered);
+
+// Safely transform content with error handling
+let sanitizedContent: string;
+try {
+  const cleanContent = sanitizeContent(post.content.rendered);
+  // Use the improved safe transformation
+  sanitizedContent = transformMediaFigures(cleanContent);
+} catch (error) {
+  console.error(`❌ Error processing content for post ${post.slug}:`, error);
+  // Fallback to basic sanitized content without media transformations
+  sanitizedContent = sanitizeContent(post.content.rendered);
+}
 ---
 
 <BaseLayout 
@@ -123,14 +260,51 @@ const sanitizedContent = sanitizeContent(post.content.rendered);
     
     <!-- Meta information -->
     <div class="article-meta">
-      {authorName && <span>By {authorName}</span>}
-      <span>{formatDate(post.date)}</span>
-      <span>{calculateReadTime(post.content.rendered)}</span>
+      <div class="meta-item">
+        <img src={CalendarIcon.src} alt="" width="16" height="16" />
+        <span>{formatDate(post.date)}</span>
+      </div>
+      <div class="meta-item">
+        <img src={ClockIcon.src} alt="" width="16" height="16" />
+        <span>{calculateReadTime(post.content.rendered)}</span>
+      </div>
     </div>
     
     <!-- Article content -->
     <div class="article-content" set:html={sanitizedContent} />
   </article>
+  
+  <!-- DOM script to inject figcaptions for images with data-caption/title -->
+  <script>
+    // Keep comments in English
+    // Inject figcaptions for images that have data-caption or title attributes
+    document.addEventListener('DOMContentLoaded', () => {
+      const mediaFigures = document.querySelectorAll('.media-figure .media-box');
+      
+      mediaFigures.forEach(mediaBox => {
+        const img = mediaBox.querySelector('img');
+        const existingCaption = mediaBox.querySelector('figcaption');
+        
+        if (img && !existingCaption) {
+          // Check for caption data in image attributes
+          const captionText = img.getAttribute('data-caption') || img.getAttribute('title') || img.getAttribute('alt');
+          
+          if (captionText && captionText.trim() !== '') {
+            // Create and inject figcaption
+            const figcaption = document.createElement('figcaption');
+            figcaption.className = 'media-caption figure-caption mb-2';
+            figcaption.setAttribute('role', 'note');
+            figcaption.textContent = captionText.trim();
+            
+            // Insert after the image
+            img.insertAdjacentElement('afterend', figcaption);
+            
+            console.log(`📝 Injected caption for image: ${captionText.substring(0, 50)}...`);
+          }
+        }
+      });
+    });
+  </script>
   
   <Footer slot="footer" />
 </BaseLayout>

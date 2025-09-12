@@ -20,27 +20,54 @@
 
 .article-pills {
   max-width: var(--container-article); /* 880px consistent width */
-  margin: 0 auto var(--sp-24) auto; /* Center */
+  margin: 0 auto var(--sp-16) auto; /* Reduced spacing: 16px instead of 24px for tighter layout */
 }
 
 .article-title {
   color: var(--brand-blue-700);
   font-family: var(--font-heading);
-  font-size: calc(var(--fs-xxl) * 1px);
+  font-size: calc(var(--fs-xxl) * 1px); /* 32px base */
   font-weight: 900;
   line-height: 1.2;
-  margin: 0 auto var(--sp-12) auto; /* Center and consistent spacing */
+  margin: 0 auto var(--sp-16) auto; /* 16px bottom margin for balanced spacing */
   max-width: var(--container-article); /* 880px consistent width */
+}
+
+/* XXL desktop breakpoint for larger title */
+@media (min-width: 1400px) {
+  .article-title {
+    font-size: 56px; /* 56px for XXL as requested */
+  }
 }
 
 .article-meta {
   display: flex;
-  gap: var(--sp-16);
+  gap: var(--sp-16); /* 16px between metadata items */
   margin: 0 auto var(--sp-40) auto; /* Center and increase bottom spacing to 40px */
   max-width: var(--container-article); /* 880px consistent width */
-  font-size: calc(var(--fs-xs) * 1px);
+  font-size: calc(var(--fs-xs) * 1px); /* 14px base */
   color: #6C8096;
   line-height: calc(var(--lh-meta) * 1px);
+  align-items: center;
+}
+
+/* XXL desktop breakpoint for larger metadata */
+@media (min-width: 1400px) {
+  .article-meta {
+    font-size: 20px; /* 20px for XXL as requested */
+  }
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8); /* 8px gap between icon and text */
+}
+
+.meta-item img {
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .article-content {
@@ -148,6 +175,17 @@
     margin-right: auto;
   }
   
+  .article-title {
+    font-size: calc(var(--fs-xl) * 1px); /* Smaller on mobile: 24px */
+    margin-bottom: var(--sp-12); /* Tighter spacing on mobile */
+  }
+  
+  .article-meta {
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: var(--sp-12); /* Smaller gap on mobile */
+    font-size: calc(var(--fs-xs) * 1px); /* Back to 14px on mobile */
+  }
+  
   .article-content figure.wp-block-image,
   .article-content .wp-caption {
     margin: var(--sp-40) auto; /* Reduced spacing on mobile */
@@ -209,4 +247,61 @@
 
 .article-content a:hover {
   text-decoration: none;
+}
+
+/* Media figure system for image/caption alignment */
+.media-figure {
+  /* Full width container that centers contents */
+  width: 100%;
+  background: #F3F3F3;
+  border-radius: var(--radius-12);
+  padding: var(--sp-12); /* Reduced padding: 12px */
+  margin: var(--sp-64) auto; /* Consistent 64px spacing between sections */
+  text-align: center; /* Centers the shrink-wrapped box */
+  max-width: var(--container-article); /* 880px consistent width */
+}
+
+.media-box {
+  /* Display table for true shrink-wrap behavior */
+  display: table;
+  margin: 0 auto; /* Center the table */
+}
+
+.media-box > img {
+  /* Image as table content defines exact width */
+  display: block;
+  height: auto;
+  max-width: 100%;
+  border-radius: var(--radius-12);
+}
+
+.media-caption,
+.figure-caption {
+  /* Caption as table-caption inherits exact table width */
+  display: table-caption !important;
+  caption-side: bottom;
+  margin-top: 8px; /* 8px spacing between image and caption */
+  font-size: 14px; /* Exact 14px size */
+  line-height: 1.5;
+  color: #5A6475;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+/* Optional: paragraph comfort on XXL */
+@media (min-width: 1400px) {
+  .article-content p {
+    line-height: 1.7;
+  }
+}
+
+/* Responsive adjustments for media figure system */
+@media (max-width: 768px) {
+  .media-figure {
+    margin: var(--sp-40) auto; /* Reduced spacing on mobile */
+    padding: var(--sp-8); /* Even smaller padding on mobile: 8px */
+    max-width: calc(100vw - var(--sp-32)); /* Account for page padding on mobile */
+  }
 }

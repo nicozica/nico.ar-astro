@@ -110,7 +110,7 @@ function getMockPosts(): WPPost[] {
   return [
     {
       id: 1,
-      slug: 'rethinking-mfa-user-sends-code',
+      slug: 'rethinking-mfa-what-happens-when-the-user-sends-the-code',
       date: '2024-06-15T10:00:00',
       title: {
         rendered: 'Rethinking MFA: What Happens When the User Sends the Code',
@@ -170,7 +170,7 @@ function getMockPosts(): WPPost[] {
     },
     {
       id: 3,
-      slug: 'psychology-of-the-web',
+      slug: 'the-psychology-of-the-web',
       date: '2024-06-14T14:30:00',
       title: { rendered: 'The Psychology of the Web' },
       excerpt: {
@@ -201,7 +201,7 @@ function getMockPosts(): WPPost[] {
     },
     {
       id: 4,
-      slug: 'future-user-authentication-biometrics-passkeys',
+      slug: 'the-future-of-user-authentication-biometrics-vs-passkeys',
       date: '2024-07-20T11:15:00',
       title: {
         rendered: 'The Future of User Authentication: Biometrics vs. Passkeys',
