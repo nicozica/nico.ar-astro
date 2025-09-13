@@ -24,37 +24,59 @@ export interface WPList<T> {
 
 const BASE = import.meta.env.PUBLIC_WP_BASE;
 
-// Robust fetch function with timeout and detailed logging
+// Robust fetch function with retry logic and exponential backoff
 async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; headers: Headers }> {
   if (!BASE) {
     throw new Error('PUBLIC_WP_BASE environment variable is not configured');
   }
   
   const url = `${BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  const maxRetries = 3;
+  let lastError: Error;
 
-  console.log(`🔗 Fetching WordPress API: ${url}`);
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const controller = new AbortController();
+    const timeoutMs = 30000; // 30s timeout
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    const response = await fetch(url, { 
-      signal: controller.signal, 
-      ...init 
-    });
-    
-    if (!response.ok) {
-      throw new Error(`WordPress API ${response.status} ${response.statusText} – ${url}`);
+    console.log(`🔗 Fetching WordPress API (attempt ${attempt}/${maxRetries}): ${url}`);
+
+    try {
+      const response = await fetch(url, { 
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Astro Static Site Generator',
+          'Accept': 'application/json',
+        },
+        ...init 
+      });
+      
+      if (!response.ok) {
+        throw new Error(`WordPress API ${response.status} ${response.statusText} – ${url}`);
+      }
+      
+      const data = await response.json() as T;
+      console.log(`✅ WordPress API success (attempt ${attempt}): ${url}`);
+      return { data, headers: response.headers };
+    } catch (error) {
+      lastError = error as Error;
+      console.error(`❌ WordPress API error (attempt ${attempt}/${maxRetries}) for ${url}:`, error);
+      
+      // If this is the last attempt, don't retry
+      if (attempt === maxRetries) {
+        break;
+      }
+      
+      // Exponential backoff: wait 2^attempt seconds before retry
+      const delayMs = Math.pow(2, attempt) * 1000;
+      console.log(`⏳ Retrying in ${delayMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    } finally {
+      clearTimeout(timeout);
     }
-    
-    const data = await response.json() as T;
-    console.log(`✅ WordPress API success: ${url}`);
-    return { data, headers: response.headers };
-  } catch (error) {
-    console.error(`❌ WordPress API error for ${url}:`, error);
-    throw error; // Re-throw to let calling function handle fallback
-  } finally {
-    clearTimeout(timeout);
   }
+
+  throw lastError!;
 }
 
 // Helper functions for clean URL construction
@@ -97,8 +119,20 @@ export async function getPostBySlug(slug: string): Promise<WPPost> {
 }
 
 export function getFeatured(post: WPPost): { src?: string; alt?: string } {
+  console.log(`🖼️ Getting featured image for post: ${post.slug}`);
+  
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
-  return { src: media?.source_url, alt: media?.alt_text || post.title.rendered };
+  
+  if (!media) {
+    console.log(`⚠️ No featured media found for post: ${post.slug}`);
+    return { src: undefined, alt: post.title.rendered };
+  }
+  
+  console.log(`✅ Featured image found: ${media.source_url}`);
+  return { 
+    src: media.source_url, 
+    alt: media.alt_text || post.title.rendered 
+  };
 }
 
 export function getAuthor(post: WPPost): string | undefined {

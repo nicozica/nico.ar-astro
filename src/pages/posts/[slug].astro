@@ -77,7 +77,25 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 
 if (!post) {
+  console.error('❌ No post data available');
   return Astro.redirect('/404');
+}
+
+// Debug: Log post data
+console.log(`🔍 Rendering post: ${post.slug}`);
+console.log(`🔍 Post title: ${post.title?.rendered || 'No title'}`);
+console.log(`🔍 Post content length: ${post.content?.rendered?.length || 0} chars`);
+console.log(`🔍 Featured image: ${post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'No image'}`);
+
+// Additional safety checks for required data
+if (!post.title?.rendered) {
+  console.error(`❌ Post ${post.slug} missing title`);
+}
+if (!post.content?.rendered) {
+  console.error(`❌ Post ${post.slug} missing content`);
+}
+if (!post.date) {
+  console.error(`❌ Post ${post.slug} missing date`);
 }
 
 // Function to strip HTML tags for meta description
@@ -235,12 +253,19 @@ try {
   <Header slot="header" />
   
   <article class="section pt-4">
+    <!-- Back to Articles link -->
+    <div class="back-to-articles pb-1 mb-2">
+      <a href="/" class="back-link">
+        <span class="back-arrow">←</span> Back to Articles
+      </a>
+    </div>
+
     <!-- Featured image -->
     {featuredImage.src ? (
       <img 
         src={featuredImage.src} 
         alt={featuredImage.alt || post.title.rendered}
-        class="article-hero"
+        class="article-hero pb-2 mb-3"
         loading="lazy"
         decoding="async"
       />

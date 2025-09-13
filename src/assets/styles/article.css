@@ -1,4 +1,38 @@
 /* Article page specific styles */
+
+/* Back to Articles link */
+.back-to-articles {
+  max-width: var(--container-article); /* 880px consistent width */
+  margin: 0 auto var(--sp-24) auto; /* Center and add bottom spacing */
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: #6C8096;
+  text-decoration: none;
+  font-size: calc(var(--fs-lg) * 1px); /* 22px base, will scale to ~20px on desktop */
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+/* Desktop XXL breakpoint for larger font size */
+@media (min-width: 1400px) {
+  .back-link {
+    font-size: 20px; /* Fixed 20px for XXL desktop */
+  }
+}
+
+.back-link:hover {
+  color: #03AAE7; /* Usar el mismo celeste en hover */
+  text-decoration: none;
+}
+
+.back-arrow {
+  color: #03AAE7; /* Celeste específico del brand */
+  margin-right: 8px;
+}
+
 .article-hero {
   width: 100%;
   max-width: var(--container-article); /* 880px consistent width */
