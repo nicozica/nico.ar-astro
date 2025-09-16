@@ -355,3 +355,132 @@
   white-space: nowrap;
   z-index: 1;
 }
+
+/* Mobile Header Styles - Only for screens <576px */
+@media (max-width: 575.98px) {
+  /* Hide mobile tagline on desktop */
+  .header__tagline-mobile {
+    display: none;
+  }
+  
+  /* Mobile header layout */
+  .header {
+    padding: 16px 0;
+  }
+  
+  .header .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  /* Brand row adjustments for mobile */
+  .header .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+  }
+  
+  /* Hide desktop tagline in mobile */
+  .header__brand .header__brand-text {
+    display: none;
+  }
+  
+  /* Logo sizing for mobile - increased to ~70px */
+  .header__logo {
+    width: 70px !important;
+    height: 56px !important; /* Maintaining aspect ratio */
+  }
+  
+  /* About button styling for mobile - increased font size */
+  .header__cta a {
+    font-size: 15px;
+    padding: 8px 14px;
+    line-height: 1;
+  }
+  
+  /* Show and style mobile tagline - increased font size */
+  .header__tagline-mobile {
+    display: block !important;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    color: #577284;
+    border-top: 1px solid #E5ECF3;
+    border-bottom: 1px solid #E5ECF3;
+    padding: 10px 0;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+  
+  .header__tagline-mobile p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 500;
+    color: #577284;
+  }
+}
+
+/* Desktop: Hide mobile tagline */
+@media (min-width: 576px) {
+  .header__tagline-mobile {
+    display: none;
+  }
+}
+
+/* Mobile Typography Adjustments - Only for screens <576px */
+@media (max-width: 575.98px) {
+  /* Body text - more readable in mobile */
+  body,
+  .article-content p,
+  .article-content,
+  .post-card .card-excerpt {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  
+  /* Article title (H1) - reduced for mobile */
+  .article-title,
+  h1 {
+    font-size: 24px !important;
+    line-height: 1.3;
+  }
+  
+  /* H2 headings */
+  .article-content h2,
+  h2 {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+  
+  /* H3 headings */
+  .article-content h3,
+  h3 {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  
+  /* Figcaptions - differentiated with color */
+  .media-caption,
+  .figure-caption,
+  figcaption,
+  .wp-caption-text {
+    font-size: 14px !important;
+    line-height: 1.4;
+    color: #577284;
+  }
+  
+  /* Post card titles on home page */
+  .post-card .card-title {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  
+  /* Meta information */
+  .article-meta,
+  .post-meta {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
