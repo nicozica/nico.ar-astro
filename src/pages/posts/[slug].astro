@@ -252,7 +252,7 @@ try {
 >
   <Header slot="header" />
   
-  <article class="section pt-4">
+  <article class="section pt-2 pt-md-4">
     <!-- Back to Articles link -->
     <div class="back-to-articles pb-1 mb-2">
       <a href="/" class="back-link">
@@ -275,13 +275,13 @@ try {
     
     <!-- Categories -->
     {categories.length > 0 && (
-      <div class="article-pills">
+      <div class="article-pills mb-2 mb-sm-3">
         <Pills tags={categories} />
       </div>
     )}
     
     <!-- Article title -->
-    <h1 class="article-title">{post.title.rendered}</h1>
+    <h1 class="article-title mt-0">{post.title.rendered}</h1>
     
     <!-- Meta information -->
     <div class="article-meta">

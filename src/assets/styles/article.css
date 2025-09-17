@@ -290,7 +290,7 @@
   background: #F3F3F3;
   border-radius: var(--radius-12);
   padding: var(--sp-12); /* Reduced padding: 12px */
-  margin: var(--sp-64) auto; /* Consistent 64px spacing between sections */
+  margin: var(--sp-40) auto; /* Consistent 64px spacing between sections */
   text-align: center; /* Centers the shrink-wrapped box */
   max-width: var(--container-article); /* 880px consistent width */
 }
@@ -334,7 +334,7 @@
 /* Responsive adjustments for media figure system */
 @media (max-width: 768px) {
   .media-figure {
-    margin: var(--sp-40) auto; /* Reduced spacing on mobile */
+    margin: var(--sp-24) auto; /* Reduced spacing on mobile */
     padding: var(--sp-8); /* Even smaller padding on mobile: 8px */
     max-width: calc(100vw - var(--sp-32)); /* Account for page padding on mobile */
   }
