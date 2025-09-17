@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.nico.ar/sitemap.xml
+
+# Block common bot traps
+Disallow: /admin/
+Disallow: /wp/
+Disallow: /*.json$
+Disallow: /*?*
+
+# Allow crawling of important pages
+Allow: /posts/
+Allow: /page/
+Allow: /about/

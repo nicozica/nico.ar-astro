@@ -24,6 +24,9 @@ export interface WPList<T> {
 
 const BASE = import.meta.env.PUBLIC_WP_BASE;
 
+// Simple cache for build-time optimization
+const buildCache = new Map<string, any>();
+
 // Robust fetch function with retry logic and exponential backoff
 async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; headers: Headers }> {
   if (!BASE) {
@@ -31,6 +34,13 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
   }
   
   const url = `${BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  
+  // Check cache first during build
+  if (import.meta.env.MODE === 'production' && buildCache.has(url)) {
+    console.log(`📦 Using cached data for: ${url}`);
+    return buildCache.get(url);
+  }
+  
   const maxRetries = 3;
   let lastError: Error;
 
@@ -57,7 +67,14 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
       
       const data = await response.json() as T;
       console.log(`✅ WordPress API success (attempt ${attempt}): ${url}`);
-      return { data, headers: response.headers };
+      
+      // Cache successful responses during build
+      const result = { data, headers: response.headers };
+      if (import.meta.env.MODE === 'production') {
+        buildCache.set(url, result);
+      }
+      
+      return result;
     } catch (error) {
       lastError = error as Error;
       console.error(`❌ WordPress API error (attempt ${attempt}/${maxRetries}) for ${url}:`, error);

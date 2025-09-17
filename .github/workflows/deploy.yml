@@ -42,13 +42,13 @@ jobs:
           echo "Testing posts endpoint:"
           curl "$PUBLIC_WP_BASE/posts?per_page=1&_fields=id,slug,date,title.rendered" | head -5 || echo "Posts endpoint failed"
         env:
-          PUBLIC_WP_BASE: https://www.nico.ar/wp-json/wp/v2
+          PUBLIC_WP_BASE: https://wp.nico.ar/wp-json/wp/v2
 
       - name: Build Astro site
-        run: npm run build
+        run: npm run build:prod
         env:
           NODE_ENV: production
-          PUBLIC_WP_BASE: https://www.nico.ar/wp-json/wp/v2
+          PUBLIC_WP_BASE: https://wp.nico.ar/wp-json/wp/v2
 
       # --- SSH Setup ---
       - name: Setup SSH agent
@@ -79,6 +79,5 @@ jobs:
             --exclude='.htaccess' \
             --exclude='error_log' \
             --exclude='logs/' \
-            --exclude='wp/' \
             -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
-            ./dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/nico.ar-dist/"
+            ./dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/nico.ar/dist/"

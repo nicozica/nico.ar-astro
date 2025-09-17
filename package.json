@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/",
+    "build:prod": "NODE_ENV=production astro build && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/",
     "preview": "astro preview",
     "lint": "eslint .",
     "format": "prettier -w .",

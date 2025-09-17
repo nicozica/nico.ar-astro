@@ -323,8 +323,6 @@
     gap: var(--sp-12);
     text-align: left;
     min-height: 50px;
-    padding-left: 0;
-    padding-right: 0;
   }
   
   .paginator__newer,
@@ -332,21 +330,11 @@
     position: static;
     margin: 0;
     flex-shrink: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  
-  .paginator__newer {
-    margin-left: 0;
-  }
-  
-  .paginator__older {
-    margin-right: 0;
   }
   
   .paginator__link {
     font-size: 16px;
-    padding: var(--sp-6) 0;
+    padding: var(--sp-6) var(--sp-8);
   }
   
   .paginator__current {
