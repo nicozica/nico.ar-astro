@@ -185,11 +185,11 @@
   }
 }
 
-/* Mobile (<768px): columnas apiladas */
+/* Mobile (<768px): stacked columns */
 @media (max-width: 767px) {
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: var(--sp-24);
+    gap: var(--sp-16);
   }
 }
 
@@ -259,7 +259,7 @@
 /* Connect icons */
 .connect-icons {
   display: flex;
-  gap: 18px;
+  gap: 22px;
   align-items: center;
 }
 
@@ -287,6 +287,19 @@
 .footer-bottom p {
   margin: 0;
   font-size: calc(var(--fs-sm) * 1px);
+}
+
+.footer-bottom a {
+  color: white;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.footer-bottom a:hover,
+.footer-bottom a:focus {
+  opacity: 0.8;
+  color: white;
+  text-decoration: underline;
 }
 
 /* Paginator */

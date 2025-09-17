@@ -32,10 +32,10 @@
 }
 
 /* MOBILE STYLES - Clean, organized approach for mobile-first design
- * Targets screens up to 576px wide with improved typography and spacing
+ * Targets screens up to 768px wide with improved typography and spacing
  * Uses !important sparingly, only where needed to override Bootstrap defaults
  */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   
   /* === HEADER MOBILE === */
   
@@ -82,6 +82,20 @@
   .header .container {
     padding-left: 20px !important;
     padding-right: 20px !important;
+  }
+  
+  /* Header row - align logo and button to edges */
+  .header .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .header .col-auto:first-child {
+    padding-left: 0 !important;
+  }
+  
+  .header .col-auto:last-child {
+    padding-right: 0 !important;
   }
   
   /* === TYPOGRAPHY MOBILE === */
@@ -184,12 +198,24 @@
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
+  
+  /* === ARTICLE MOBILE === */
+  
+  /* Back to Articles link - smaller on mobile */
+  .back-link {
+    font-size: 16px !important; /* Reduced from 22px */
+  }
+  
+  .back-arrow {
+    font-size: 14px !important; /* Smaller arrow */
+    margin-right: 6px !important; /* Reduced spacing */
+  }
 }
 
 /* DESKTOP: Hide mobile-specific elements
  * Ensures mobile tagline doesn't appear on larger screens
  */
-@media (min-width: 576px) {
+@media (min-width: 769px) {
   .header__tagline-mobile {
     display: none !important;
   }
