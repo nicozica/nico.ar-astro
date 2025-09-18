@@ -11,18 +11,13 @@ import ClockIcon from '../../assets/images/icon-clock.svg';
 // Generate static paths for all posts
 export async function getStaticPaths() {
   try {
-    console.log('🔄 Generating static paths for all posts...');
-    
     // First try to get posts from the API
     let allPosts: any[] = [];
     
     try {
       const { items: posts } = await getPosts({ page: 1, perPage: 100 });
       allPosts = posts;
-      console.log(`✅ Successfully fetched ${allPosts.length} posts from WordPress API`);
     } catch (apiError) {
-      console.log('⚠️ WordPress API failed, using fallback method...');
-      
       // Fallback: try to get individual posts by known slugs
       const knownSlugs = [
         'rethinking-mfa-what-happens-when-the-user-sends-the-code',
@@ -42,33 +37,25 @@ export async function getStaticPaths() {
           const post = await getPostBySlug(slug);
           if (post) {
             allPosts.push(post);
-            console.log(`✅ Successfully fetched post: ${slug}`);
           }
         } catch (error) {
-          console.log(`⚠️ Failed to fetch post: ${slug}`);
+          console.error(`❌ Failed to fetch post: ${slug}`, error);
         }
       }
-      
-      console.log(`✅ Fallback method fetched ${allPosts.length} posts`);
     }
     
     if (allPosts.length === 0) {
-      console.log('❌ No posts found, returning empty array');
       return [];
     }
     
     const paths = allPosts.map(post => {
-      console.log(`🔗 Generating path for slug: ${post.slug}`);
       return {
         params: { slug: post.slug },
         props: { post }
       };
     });
-    
-    console.log(`✅ Generated ${paths.length} static paths`);
-    return paths;
-    
-  } catch (error) {
+
+    return paths;  } catch (error) {
     console.error('❌ Error generating static paths:', error);
     return [];
   }
@@ -80,14 +67,6 @@ if (!post) {
   console.error('❌ No post data available');
   return Astro.redirect('/404');
 }
-
-// Debug: Log post data
-console.log(`🔍 Rendering post: ${post.slug}`);
-console.log(`🔍 Post title: ${post.title?.rendered || 'No title'}`);
-console.log(`🔍 Post content length: ${post.content?.rendered?.length || 0} chars`);
-console.log(`🔍 Featured image: ${post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'No image'}`);
-
-// Additional safety checks for required data
 if (!post.title?.rendered) {
   console.error(`❌ Post ${post.slug} missing title`);
 }
@@ -290,13 +269,15 @@ try {
 
     <!-- Featured image -->
     {featuredImage.src ? (
-      <img 
-        src={featuredImage.src} 
-        alt={featuredImage.alt || post.title.rendered}
-        class="article-hero pb-2 mb-3"
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="article-hero-wrapper pb-2 mb-3">
+        <img 
+          src={featuredImage.src} 
+          alt={featuredImage.alt || post.title.rendered}
+          class="article-hero"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     ) : (
       <div class="article-hero--placeholder"></div>
     )}
@@ -351,8 +332,6 @@ try {
             
             // Insert after the image
             img.insertAdjacentElement('afterend', figcaption);
-            
-            console.log(`📝 Injected caption for image: ${captionText.substring(0, 50)}...`);
           }
         }
       });

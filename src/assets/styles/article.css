@@ -33,14 +33,19 @@
   margin-right: 8px;
 }
 
-.article-hero {
-  width: 100%;
+/* Article hero image */
+.article-hero-wrapper {
   max-width: var(--container-article); /* 880px consistent width */
-  margin: 0 auto var(--sp-40) auto; /* Center and add bottom spacing */
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  border-radius: var(--radius-12);
+  margin: 0 auto; /* Center it */
   display: block;
+}
+
+.article-hero {
+  background: #e5ecf3;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .article-hero--placeholder {
@@ -49,7 +54,7 @@
   max-width: var(--container-article); /* 880px consistent width */
   margin: 0 auto var(--sp-40) auto; /* Center and add bottom spacing */
   aspect-ratio: 16/9;
-  border-radius: var(--radius-12);
+  border-radius: 12px; /* Use exact same value as cards */
 }
 
 .article-pills {
