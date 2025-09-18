@@ -313,36 +313,14 @@
   border-top: 1px solid #E5ECF3;
   position: relative;
   min-height: 60px;
+  z-index: 2; /* Ensure paginator sits above decorative elements */
 }
 
-@media (max-width: 768px) {
-  .paginator {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--sp-12);
-    text-align: left;
-    min-height: 50px;
-  }
-  
-  .paginator__newer,
-  .paginator__older {
-    position: static;
-    margin: 0;
-    flex-shrink: 0;
-  }
-  
-  .paginator__link {
-    font-size: 16px;
-    padding: var(--sp-6) var(--sp-8);
-  }
-  
-  .paginator__current {
-    font-size: 16px;
-    padding: var(--sp-6) var(--sp-8);
-    text-align: center;
-    flex-grow: 1;
-  }
+/* Prevent any decorative elements from capturing clicks */
+.paginator::before,
+.paginator::after {
+  pointer-events: none !important;
+  z-index: 0;
 }
 
 .paginator__link {
@@ -354,6 +332,10 @@
   transition: text-decoration 0.2s ease, color 0.2s ease;
   padding: var(--sp-8) var(--sp-12);
   border-radius: 4px;
+  position: relative;
+  z-index: 3; /* Links above everything */
+  pointer-events: auto; /* Ensure links accept events */
+  -webkit-tap-highlight-color: rgba(0,0,0,0.08); /* Touch feedback */
 }
 
 .paginator__newer {
@@ -380,10 +362,60 @@
   padding: var(--sp-8) var(--sp-12);
   white-space: nowrap;
   z-index: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Align with the baseline of the links, accounting for their padding */
+  top: var(--sp-16); /* Same as container padding-top */
 }
 
-/* Mobile Header Styles - Only for screens <576px */
-@media (max-width: 575.98px) {
+/* Mobile-optimized paginator - single row, touch-friendly */
+@media (max-width: 768px) {
+  .paginator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0 4px;
+    margin-top: 16px;
+    border-top: 1px solid #E5ECF3;
+    min-height: 50px;
+    z-index: 2; /* Keep above decorative elements */
+  }
+  
+  .paginator__newer,
+  .paginator__older {
+    position: static; /* Remove absolute positioning */
+    margin: 0;
+    flex-shrink: 0;
+  }
+  
+  .paginator__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 1.2;
+    padding: 10px 0; /* Touch-friendly target */
+    min-height: 44px; /* Accessible touch target */
+    text-decoration: none;
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+  }
+  
+  .paginator__current {
+    font-size: 16px;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 10px 8px;
+    text-align: center;
+    flex-grow: 1;
+  }
+}
+
+/* Mobile Header Styles - Only for screens <=768px */
+@media (max-width: 768px) {
   /* Hide mobile tagline on desktop */
   .header__tagline-mobile {
     display: none;
@@ -449,14 +481,14 @@
 }
 
 /* Desktop: Hide mobile tagline */
-@media (min-width: 576px) {
+@media (min-width: 769px) {
   .header__tagline-mobile {
     display: none;
   }
 }
 
-/* Mobile Typography Adjustments - Only for screens <576px */
-@media (max-width: 575.98px) {
+/* Mobile Typography Adjustments - Only for screens <=768px */
+@media (max-width: 768px) {
   /* Body text - more readable in mobile */
   body,
   .article-content p,
@@ -466,11 +498,14 @@
     line-height: 1.55;
   }
   
-  /* Article title (H1) - reduced for mobile */
+  /* Article title (H1) - enlarged for better mobile readability */
   .article-title,
+  .article-content h1,
+  article h1,
   h1 {
-    font-size: 24px !important;
+    font-size: 28px !important;
     line-height: 1.3;
+    margin: 1.5rem 0 0.75rem 0;
   }
   
   /* H2 headings */
@@ -497,9 +532,10 @@
     color: #577284;
   }
   
-  /* Post card titles on home page */
-  .post-card .card-title {
-    font-size: 20px;
+  /* Post card titles on home page - enlarged for mobile */
+  .post-card .card-title,
+  .card__title {
+    font-size: 22px !important;
     line-height: 1.3;
   }
   

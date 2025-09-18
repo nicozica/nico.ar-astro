@@ -15,15 +15,25 @@ export function formatDateEn(dateStr: string): string {
 }
 
 /**
- * Strip HTML tags from text
+ * Strip HTML tags from text and decode HTML entities
  * @param html HTML string
- * @returns Plain text
+ * @returns Plain text with decoded entities
  */
 export function stripHtml(html: string): string {
   return html
     .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/&[^;]+;/g, ' ') // Replace HTML entities with spaces
-    .replace(/\s+/g, ' ') // Collapse whitespace
+    .replace(/&quot;/g, '"')  // Replace quotes
+    .replace(/&apos;/g, "'")  // Replace apostrophes
+    .replace(/&#39;/g, "'")   // Replace numeric apostrophes
+    .replace(/&#8217;/g, "'") // Replace right single quotation mark
+    .replace(/&#8216;/g, "'") // Replace left single quotation mark
+    .replace(/&#8220;/g, '"') // Replace left double quotation mark
+    .replace(/&#8221;/g, '"') // Replace right double quotation mark
+    .replace(/&amp;/g, '&')   // Replace ampersands (must be last)
+    .replace(/&lt;/g, '<')    // Replace less than
+    .replace(/&gt;/g, '>')    // Replace greater than
+    .replace(/&nbsp;/g, ' ')  // Replace non-breaking spaces
+    .replace(/\s+/g, ' ')     // Collapse whitespace
     .trim();
 }
 

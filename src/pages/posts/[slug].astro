@@ -214,6 +214,33 @@ function transformMediaFigures(html: string): string {
   return result;
 }
 
+// Transform internal WordPress links to Astro routes
+function transformInternalLinks(html: string): string {
+  // Transform links from WordPress domain to Astro /posts/ structure
+  // This regex matches various formats of nico.ar domain links
+  let result = html;
+  
+  // Match: https://www.nico.ar/slug/ or https://www.nico.ar/slug
+  result = result.replace(
+    /(<a[^>]+href=")https:\/\/www\.nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
+    '$1/posts/$2$3'
+  );
+  
+  // Match: https://nico.ar/slug/ or https://nico.ar/slug (without www)
+  result = result.replace(
+    /(<a[^>]+href=")https:\/\/nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
+    '$1/posts/$2$3'
+  );
+  
+  // Match: www.nico.ar/slug (without protocol)
+  result = result.replace(
+    /(<a[^>]+href=")www\.nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
+    '$1/posts/$2$3'
+  );
+  
+  return result;
+}
+
 // Get categories from embedded data
 const categories = post._embedded?.['wp:term']?.[0] || [];
 
@@ -237,11 +264,12 @@ const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
 let sanitizedContent: string;
 try {
   const cleanContent = sanitizeContent(post.content.rendered);
-  // Use the improved safe transformation
-  sanitizedContent = transformMediaFigures(cleanContent);
+  // Transform internal links first, then media figures
+  const linkedContent = transformInternalLinks(cleanContent);
+  sanitizedContent = transformMediaFigures(linkedContent);
 } catch (error) {
   console.error(`❌ Error processing content for post ${post.slug}:`, error);
-  // Fallback to basic sanitized content without media transformations
+  // Fallback to basic sanitized content without transformations
   sanitizedContent = sanitizeContent(post.content.rendered);
 }
 ---
