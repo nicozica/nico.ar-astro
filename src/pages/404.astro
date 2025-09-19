@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = '404 - Page Not Found · nico.ar';
+const description = 'The page you are looking for could not be found.';
+---
+
+<BaseLayout 
+  title={title}
+  description={description}
+>
+  <Header slot="header" />
+  
+  <main class="section py-5">
+    <div class="container text-center">
+      <!-- 404 Title -->
+      <h1 class="display-1 fw-bold text-primary mb-4" style="font-size: 8rem; line-height: 1;">
+        404
+      </h1>
+      
+      <!-- Description -->
+      <p class="fs-5 text-muted mb-5">
+        The page you are looking for could not be found.
+      </p>
+      
+      <!-- Action Buttons -->
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <a href="/" class="btn btn-outline-custom px-4 py-2">
+          ← Back to home
+        </a>
+        <a href="/about-me" class="btn btn-custom px-4 py-2">
+          About me
+        </a>
+      </div>
+    </div>
+  </main>
+  
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .display-1 {
+    color: var(--brand-blue-700) !important;
+  }
+  
+  .section {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn {
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  
+  /* Custom buttons using site color tokens - with !important to override Bootstrap */
+  .btn-custom {
+    background-color: var(--link) !important;
+    border: 1px solid var(--link) !important;
+    color: white !important;
+  }
+  
+  .btn-custom:hover,
+  .btn-custom:focus,
+  .btn-custom:active {
+    background-color: var(--brand-blue-700) !important;
+    border-color: var(--brand-blue-700) !important;
+    color: white !important;
+  }
+  
+  .btn-outline-custom {
+    background-color: transparent !important;
+    border: 1px solid var(--link) !important;
+    color: var(--link) !important;
+  }
+  
+  .btn-outline-custom:hover,
+  .btn-outline-custom:focus,
+  .btn-outline-custom:active {
+    background-color: var(--link) !important;
+    border-color: var(--link) !important;
+    color: white !important;
+  }
+</style>
