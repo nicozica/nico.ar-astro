@@ -4,6 +4,15 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - manual_rebuild      # URL especial desde WP (admin)
+      - publish_post        # cuando WP pasa de borrador a publicado
+      - webhook             # compatibility: por si ya lo usabas
+
+concurrency:
+  group: deploy-nico-ar
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -71,6 +80,15 @@ jobs:
           test -n "${{ secrets.SSH_PRIVATE_KEY }}" || (echo "SSH_PRIVATE_KEY secret is missing" && exit 1)
           test -n "${{ secrets.SSH_HOST }}" || (echo "SSH_HOST secret is missing" && exit 1)
           test -n "${{ secrets.SSH_USER }}" || (echo "SSH_USER secret is missing" && exit 1)
+
+      - name: Log trigger info
+        run: |
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action || 'n/a' }}"
+          echo "Event type: ${{ github.event.client_payload.event_type || 'n/a' }}"
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "Client payload: ${{ toJson(github.event.client_payload) }}"
+          fi
 
       # --- Deploy ---
       - name: Deploy to server via rsync
