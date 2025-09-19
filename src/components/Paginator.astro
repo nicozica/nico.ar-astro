@@ -22,24 +22,12 @@ const getPageUrl = (page: number) => {
 ---
 
 {totalPages > 1 && (
-  <div class="paginator mt-5">
-    <!-- Newer Posts (Previous) - only show if there's a previous page -->
-    {prevPage && (
-      <a href={getPageUrl(prevPage)} class="paginator__link paginator__newer">
-        ← Newer Posts
-      </a>
-    )}
-    
-    <!-- Current page indicator -->
-    <span class="paginator__current">
-      {currentPage} of {totalPages}
-    </span>
-    
-    <!-- Older Posts (Next) - only show if there's a next page -->
+  <!-- Paginator with CSS Grid for perfect centering -->
+  <div class="paginator pagination-grid py-3 mt-5">
+    <span class="spacer" aria-hidden="true"></span>
+    <span class="page-counter">{currentPage} of {totalPages}</span>
     {nextPage && (
-      <a href={getPageUrl(nextPage)} class="paginator__link paginator__older">
-        Older Posts →
-      </a>
+      <a class="older-posts text-decoration-none" href={getPageUrl(nextPage)}>Older Posts →</a>
     )}
   </div>
 )}

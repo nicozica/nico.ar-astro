@@ -21,6 +21,17 @@ canvas,
 svg {
   display: block;
   max-width: 100%;
+  height: auto; /* Ensure media never exceeds container width */
+}
+
+/* Global anti-overflow safety for medium widths */
+/* Wrap long tokens (e.g., category tags, badges) to prevent horizontal scroll */
+.badge, 
+.tag, 
+.post-tag,
+.pill {
+  word-break: break-word;       /* Break long words */
+  overflow-wrap: anywhere;      /* Allow wrapping anywhere if needed */
 }
 
 input,

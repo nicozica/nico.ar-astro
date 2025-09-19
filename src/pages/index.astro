@@ -15,10 +15,12 @@ const { items: posts, totalPages } = await getPosts({ page: currentPage, perPage
 <BaseLayout title="nico.ar - Notes on Design & Tech" description="Personal blog about design, technology, and user experience by Nicolás Zicarelli from Buenos Aires, Argentina.">
   <Header slot="header" />
   
+  <!-- Main content section with proper container structure to prevent horizontal overflow -->
   <div class="section py-2 mt-2">
-    <div class="row posts-grid gx-md-60 gy-4">
+    <!-- Enhanced grid spacing: more horizontal space between columns on desktop -->
+    <div class="row posts-grid gx-3 gx-lg-4 gx-xl-5 gy-4">
       {posts.map(post => (
-        <div class="col-12 col-md-6 mb-4">
+        <div class="col-12 col-lg-6 mb-4">
           <PostCard post={post} />
         </div>
       ))}
