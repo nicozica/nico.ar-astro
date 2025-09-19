@@ -37,7 +37,6 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
   
   // Check cache first during build
   if (import.meta.env.MODE === 'production' && buildCache.has(url)) {
-    console.log(`📦 Using cached data for: ${url}`);
     return buildCache.get(url);
   }
   
@@ -48,8 +47,6 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
     const controller = new AbortController();
     const timeoutMs = 30000; // 30s timeout
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-    console.log(`🔗 Fetching WordPress API (attempt ${attempt}/${maxRetries}): ${url}`);
 
     try {
       const response = await fetch(url, { 
@@ -66,7 +63,6 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
       }
       
       const data = await response.json() as T;
-      console.log(`✅ WordPress API success (attempt ${attempt}): ${url}`);
       
       // Cache successful responses during build
       const result = { data, headers: response.headers };
@@ -86,7 +82,6 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
       
       // Exponential backoff: wait 2^attempt seconds before retry
       const delayMs = Math.pow(2, attempt) * 1000;
-      console.log(`⏳ Retrying in ${delayMs}ms...`);
       await new Promise(resolve => setTimeout(resolve, delayMs));
     } finally {
       clearTimeout(timeout);
@@ -108,12 +103,9 @@ export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPa
     const { data: response, headers } = await fetchWP<WPPost[]>(listUrl(page, perPage));
     const totalPages = Number(headers.get("X-WP-TotalPages") || 1);
     
-    console.log(`📄 Got ${response.length} posts, total pages: ${totalPages}`);
-    
     return { items: response, totalPages };
   } catch (error) {
     console.error('WordPress API error in getPosts:', error);
-    console.warn('⚠️ Falling back to mock data due to WordPress API failure');
     return { items: getMockPosts(), totalPages: 2 };
   }
 }
@@ -128,7 +120,6 @@ export async function getPostBySlug(slug: string): Promise<WPPost> {
     return response[0];
   } catch (error) {
     console.error('WordPress API error in getPostBySlug:', error);
-    console.warn('⚠️ Falling back to mock data due to WordPress API failure');
     const post = getMockPostBySlug(slug);
     if (!post) throw new Error(`Post with slug "${slug}" not found`);
     return post;
@@ -136,19 +127,15 @@ export async function getPostBySlug(slug: string): Promise<WPPost> {
 }
 
 export function getFeatured(post: WPPost): { src?: string; alt?: string } {
-  console.log(`🖼️ Getting featured image for post: ${post.slug}`);
-  
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
   
   if (!media) {
-    console.log(`⚠️ No featured media found for post: ${post.slug}`);
-    return { src: undefined, alt: post.title.rendered };
+    return {};
   }
   
-  console.log(`✅ Featured image found: ${media.source_url}`);
-  return { 
-    src: media.source_url, 
-    alt: media.alt_text || post.title.rendered 
+  return {
+    src: media.source_url,
+    alt: media.alt_text || post.title?.rendered
   };
 }
 

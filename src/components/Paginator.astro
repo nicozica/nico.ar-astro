@@ -1,5 +1,5 @@
 ---
-export interface Props {
+interface Props {
   currentPage: number;
   totalPages: number;
   baseUrl?: string;
@@ -7,9 +7,11 @@ export interface Props {
 
 const { currentPage, totalPages, baseUrl } = Astro.props;
 
+// Calculate previous and next page numbers
 const prevPage = currentPage > 1 ? currentPage - 1 : null;
 const nextPage = currentPage < totalPages ? currentPage + 1 : null;
 
+// Generate URLs for previous and next pages
 const getPageUrl = (page: number) => {
   if (page === 1) {
     return '/';
@@ -19,15 +21,29 @@ const getPageUrl = (page: number) => {
   }
   return `/?page=${page}`;
 };
+
+// Generate href URLs or null
+const prevHref = prevPage ? getPageUrl(prevPage) : null;
+const nextHref = nextPage ? getPageUrl(nextPage) : null;
 ---
 
 {totalPages > 1 && (
-  <!-- Paginator with CSS Grid for perfect centering -->
-  <div class="paginator pagination-grid py-3 mt-5">
-    <span class="spacer" aria-hidden="true"></span>
-    <span class="page-counter">{currentPage} of {totalPages}</span>
-    {nextPage && (
-      <a class="older-posts text-decoration-none" href={getPageUrl(nextPage)}>Older Posts →</a>
-    )}
-  </div>
+  <nav class="paginator d-flex align-items-center gap-3 py-3" aria-label="Pagination">
+    <!-- Left: Newer Posts -->
+    <div class="flex-grow-1">
+      {prevHref
+        ? <a class="text-decoration-none" rel="prev" aria-label="Newer posts" href={prevHref}>← Newer Posts</a>
+        : <span class="invisible" aria-hidden="true">← Newer Posts</span>}
+    </div>
+
+    <!-- Center: Page counter -->
+    <div class="text-center fw-semibold">{currentPage} of {totalPages}</div>
+
+    <!-- Right: Older Posts -->
+    <div class="flex-grow-1 d-flex justify-content-end">
+      {nextHref
+        ? <a class="text-decoration-none" rel="next" aria-label="Older posts" href={nextHref}>Older Posts →</a>
+        : <span class="invisible" aria-hidden="true">Older Posts →</span>}
+    </div>
+  </nav>
 )}
