@@ -73,7 +73,7 @@
 }
 
 /* XXL desktop breakpoint for larger title */
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .article-title {
     font-size: 56px; /* 56px for XXL as requested */
   }
