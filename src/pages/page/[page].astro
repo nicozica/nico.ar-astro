@@ -41,7 +41,7 @@ const { posts, currentPage, totalPages } = Astro.props as Props;
 <BaseLayout title={`Page ${currentPage} - nico.ar - Notes on Design & Tech`} description="Personal blog about design, technology, and user experience by Nicolas Zicarelli from Buenos Aires, Argentina.">
   <Header slot="header" />
   
-  <div class="section py-2 mt-2">
+  <div class="section py-2 mt-2 mb-4">
     <div class="row posts-grid gx-md-60 gy-4">
       {posts.map(post => (
         <div class="col-12 col-md-6 mb-4">
