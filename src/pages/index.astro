@@ -16,7 +16,7 @@ const { items: posts, totalPages } = await getPosts({ page: currentPage, perPage
   <Header slot="header" />
   
   <!-- Main content section with proper container structure to prevent horizontal overflow -->
-  <div class="section py-2 mt-2">
+  <div class="section py-2 mt-2 mb-2 mb-sm-3">
     <!-- Enhanced grid spacing: more horizontal space between columns on desktop -->
     <div class="row posts-grid gx-3 gx-lg-4 gx-xl-5 gy-4">
       {posts.map(post => (
