@@ -152,14 +152,14 @@
 
 .footer-grid {
   display: grid;
-  gap: var(--sp-32);
+  gap: var(--sp-48);
   align-items: start;
 }
 
 /* Desktop (≥1024px): 3 columnas con proporciones específicas */
 @media (min-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 2fr 1.2fr 0.8fr;
+    grid-template-columns: 1.6fr 1.2fr 1fr;
   }
 }
 

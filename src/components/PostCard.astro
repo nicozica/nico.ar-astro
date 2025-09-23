@@ -20,10 +20,9 @@ const featuredImage = getFeatured(post);
 // Calculate reading time from content
 const readingTime = computeReadingTime(post.content.rendered);
 
-// Get clean excerpt with responsive length
-// Desktop: ~220 chars, Tablet: ~180, Mobile: ~140
-// We'll use 180 as a good middle ground and let CSS handle the rest
-const excerpt = getExcerpt(post.excerpt.rendered || post.content.rendered, 180);
+// Get clean excerpt with full length for JavaScript clamping
+// The text-clamp.js will handle the responsive truncation
+const excerpt = getExcerpt(post.excerpt.rendered || post.content.rendered, 500);
 ---
 
 <a href={`/posts/${post.slug}`} class="card">
@@ -67,7 +66,7 @@ const excerpt = getExcerpt(post.excerpt.rendered || post.content.rendered, 180);
   </div>
   
   <!-- Excerpt -->
-  <p class="card__excerpt">
+  <p class="card__excerpt post-excerpt-js" data-clamp="3" data-clamp-lg="4">
     {excerpt}
   </p>
 </a>
