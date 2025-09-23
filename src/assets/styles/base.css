@@ -34,6 +34,17 @@ svg {
   overflow-wrap: anywhere;      /* Allow wrapping anywhere if needed */
 }
 
+/* Prevent horizontal scroll globally in problematic range */
+@media (min-width: 1200px) and (max-width: 1280px) {
+  html, body {
+    overflow-x: hidden;
+  }
+  
+  .container {
+    max-width: calc(100vw - 40px) !important; /* Leave space for scrollbar */
+  }
+}
+
 input,
 button,
 textarea,
