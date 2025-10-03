@@ -1,6 +1,6 @@
 export const about = {
   title: "About me",
-  blurb: "I design digital products, tinker with servers and run long distances. Here I write about design, tech and the everyday in between.",
+  blurb: "I design digital products, tinker with tech and run long distances. Here I write about design, tech and the everyday in between.",
   cta: { label: "Read more →", href: "/about-me" }
 };
 

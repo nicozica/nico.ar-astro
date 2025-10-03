@@ -33,5 +33,19 @@ const { items: posts, totalPages } = await getPosts({ page: currentPage, perPage
     />
   </div>
   
+  <!-- Script to save current page in sessionStorage when clicking article links -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Save current page info when user clicks on article links
+      const articleLinks = document.querySelectorAll('a[href^="/posts/"]');
+      articleLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          // Store that user came from page 1 (homepage)
+          sessionStorage.setItem('blog-return-page', '/');
+        });
+      });
+    });
+  </script>
+  
   <Footer slot="footer" />
 </BaseLayout>

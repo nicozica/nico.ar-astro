@@ -263,7 +263,7 @@ try {
   <article class="section pt-2 pt-md-4">
     <!-- Back to Articles link -->
     <div class="back-to-articles pb-1 mb-2">
-      <a href="/" class="back-link">
+      <a href="/" class="back-link" id="back-to-articles">
         <span class="back-arrow">←</span> Back to Articles
       </a>
     </div>
@@ -309,11 +309,10 @@ try {
     <div class="article-content" set:html={sanitizedContent} />
   </article>
   
-  <!-- DOM script to inject figcaptions for images with data-caption/title -->
+  <!-- DOM script to inject figcaptions and handle smart navigation -->
   <script>
-    // Keep comments in English
-    // Inject figcaptions for images that have data-caption or title attributes
     document.addEventListener('DOMContentLoaded', () => {
+      // Inject figcaptions for images that have data-caption or title attributes
       const mediaFigures = document.querySelectorAll('.media-figure .media-box');
       
       mediaFigures.forEach(mediaBox => {
@@ -321,21 +320,27 @@ try {
         const existingCaption = mediaBox.querySelector('figcaption');
         
         if (img && !existingCaption) {
-          // Check for caption data in image attributes
           const captionText = img.getAttribute('data-caption') || img.getAttribute('title') || img.getAttribute('alt');
           
           if (captionText && captionText.trim() !== '') {
-            // Create and inject figcaption
             const figcaption = document.createElement('figcaption');
             figcaption.className = 'media-caption figure-caption mb-2';
             figcaption.setAttribute('role', 'note');
             figcaption.textContent = captionText.trim();
-            
-            // Insert after the image
             img.insertAdjacentElement('afterend', figcaption);
           }
         }
       });
+      
+      // Smart back navigation using sessionStorage
+      const backLink = document.getElementById('back-to-articles');
+      if (backLink) {
+        const returnPage = sessionStorage.getItem('blog-return-page');
+        if (returnPage) {
+          backLink.setAttribute('href', returnPage);
+          sessionStorage.removeItem('blog-return-page');
+        }
+      }
     });
   </script>
   
