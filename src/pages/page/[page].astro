@@ -60,12 +60,16 @@ const { posts, currentPage, totalPages } = Astro.props as Props;
   <!-- Script to save current page in sessionStorage when clicking article links -->
   <script define:vars={{ currentPage }}>
     document.addEventListener('DOMContentLoaded', () => {
+      // Debug: log current page value
+      console.log('Current page:', currentPage);
+      
       // Save current page info when user clicks on article links
       const articleLinks = document.querySelectorAll('a[href^="/posts/"]');
       articleLinks.forEach(link => {
         link.addEventListener('click', () => {
           // Store the current page number for returning
           const returnUrl = currentPage === 1 ? '/' : `/page/${currentPage}`;
+          console.log('Storing return URL:', returnUrl);
           sessionStorage.setItem('blog-return-page', returnUrl);
         });
       });
