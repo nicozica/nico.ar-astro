@@ -306,6 +306,11 @@
   margin: 0 auto; /* Center the table */
 }
 
+/* Media box with iframe should take full width */
+.media-box:has(iframe) {
+  width: 100%;
+}
+
 .media-box > img {
   /* Image as table content defines exact width */
   display: block;
@@ -343,4 +348,14 @@
     padding: var(--sp-8); /* Even smaller padding on mobile: 8px */
     max-width: calc(100vw - var(--sp-32)); /* Account for page padding on mobile */
   }
+}
+
+/* YouTube embed styles - using same classes as images for consistency */
+.media-box > iframe {
+  /* Make YouTube embeds responsive with 16:9 aspect ratio */
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-12);
+  border: none;
 }

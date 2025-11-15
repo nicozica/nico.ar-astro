@@ -92,19 +92,20 @@ function calculateReadTime(content: string): string {
 // Sanitize HTML content
 function sanitizeContent(html: string): string {
   return sanitizeHtml(html, {
-    allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br', 'figure', 'figcaption', 'div'],
+    allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'a', 'img', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote', 'hr', 'strong', 'em', 'br', 'figure', 'figcaption', 'div', 'iframe'],
     allowedAttributes: {
       'a': ['href', 'target', 'rel'],
       'img': ['src', 'alt', 'loading', 'decoding', 'width', 'height', 'class', 'data-caption', 'title'],
       'figure': ['class'],
       'figcaption': ['class', 'role'],
-      'div': ['class']
+      'div': ['class'],
+      'iframe': ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'loading', 'title', 'referrerpolicy']
     },
     allowedSchemes: ['http', 'https', 'mailto'],
     allowedClasses: {
-      'figure': ['wp-block-image', 'wp-caption', 'media-figure'],
+      'figure': ['wp-block-image', 'wp-caption', 'media-figure', 'wp-block-embed', 'is-type-video', 'is-provider-youtube', 'wp-block-embed-youtube', 'wp-embed-aspect-16-9', 'wp-has-aspect-ratio'],
       'figcaption': ['wp-element-caption', 'media-caption', 'figure-caption', 'mb-2'],
-      'div': ['wp-caption-text', 'media-box'],
+      'div': ['wp-caption-text', 'media-box', 'wp-block-embed__wrapper'],
       'img': ['img-fluid', 'd-block', 'my-1']
     },
     transformTags: {
@@ -220,6 +221,49 @@ function transformInternalLinks(html: string): string {
   return result;
 }
 
+// Transform YouTube embeds into media-figure structure
+function transformYouTubeEmbeds(html: string): string {
+  let result = html;
+  
+  // Match WordPress YouTube embed figures: <figure class="wp-block-embed..."><div class="wp-block-embed__wrapper"><iframe...></iframe></div><figcaption>...</figcaption></figure>
+  result = result.replace(
+    /<figure class="wp-block-embed[^"]*"[^>]*>(.*?)<\/figure>/gs,
+    (match, content) => {
+      // Check if this is a YouTube embed
+      if (!content.includes('youtube.com/embed')) {
+        return match; // Not a YouTube embed, return original
+      }
+      
+      // Extract iframe
+      const iframeMatch = content.match(/<iframe([^>]*)><\/iframe>/);
+      if (!iframeMatch) return match;
+      
+      const iframeAttribs = iframeMatch[1];
+      
+      // Extract figcaption if present (this is the real caption, not the title attribute)
+      const figcaptionMatch = content.match(/<figcaption[^>]*>(.*?)<\/figcaption>/s);
+      let figcaptionContent = '';
+      
+      if (figcaptionMatch) {
+        figcaptionContent = `<figcaption class="media-caption figure-caption mb-2" role="note">${figcaptionMatch[1]}</figcaption>`;
+      }
+      
+      // Remove title attribute from iframe as it's for screen readers, not display
+      const cleanedIframeAttribs = iframeAttribs.replace(/\s*title="[^"]*"/g, '');
+      
+      // Build the media-figure structure matching images
+      return `<figure class="media-figure">
+  <div class="media-box">
+    <iframe class="img-fluid d-block my-1"${cleanedIframeAttribs}></iframe>
+    ${figcaptionContent}
+  </div>
+</figure>`;
+    }
+  );
+  
+  return result;
+}
+
 // Get categories from embedded data
 const categories = post._embedded?.['wp:term']?.[0] || [];
 
@@ -243,9 +287,10 @@ const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
 let sanitizedContent: string;
 try {
   const cleanContent = sanitizeContent(post.content.rendered);
-  // Transform internal links first, then media figures
+  // Transform internal links first, then media figures, then YouTube embeds
   const linkedContent = transformInternalLinks(cleanContent);
-  sanitizedContent = transformMediaFigures(linkedContent);
+  const mediaContent = transformMediaFigures(linkedContent);
+  sanitizedContent = transformYouTubeEmbeds(mediaContent);
 } catch (error) {
   console.error(`❌ Error processing content for post ${post.slug}:`, error);
   // Fallback to basic sanitized content without transformations
