@@ -302,5 +302,5 @@ Crea archivos `.astro` en `src/components/` y añade estilos en `components.css`
 
 ## 📄 Licencia
 
-© 1999-2025 Argensonix Multimedia  
+© 1999-2026 Argensonix Multimedia  
 Made in Buenos Aires
