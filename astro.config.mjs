@@ -14,13 +14,6 @@ export default defineConfig({
   vite: {
     build: {
       cssCodeSplit: false, // Bundle all CSS for better caching
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['bootstrap']
-          }
-        }
-      }
     }
   }
 });
