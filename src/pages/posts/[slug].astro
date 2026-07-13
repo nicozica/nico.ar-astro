@@ -194,33 +194,6 @@ function transformMediaFigures(html: string): string {
   return result;
 }
 
-// Transform internal WordPress links to Astro routes
-function transformInternalLinks(html: string): string {
-  // Transform links from WordPress domain to Astro /posts/ structure
-  // This regex matches various formats of nico.ar domain links
-  let result = html;
-  
-  // Match: https://www.nico.ar/slug/ or https://www.nico.ar/slug
-  result = result.replace(
-    /(<a[^>]+href=")https:\/\/www\.nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
-    '$1/posts/$2$3'
-  );
-  
-  // Match: https://nico.ar/slug/ or https://nico.ar/slug (without www)
-  result = result.replace(
-    /(<a[^>]+href=")https:\/\/nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
-    '$1/posts/$2$3'
-  );
-  
-  // Match: www.nico.ar/slug (without protocol)
-  result = result.replace(
-    /(<a[^>]+href=")www\.nico\.ar\/([^\/"\s]+)\/?("[^>]*>)/g,
-    '$1/posts/$2$3'
-  );
-  
-  return result;
-}
-
 // Transform YouTube embeds into media-figure structure
 function transformYouTubeEmbeds(html: string): string {
   let result = html;
@@ -284,12 +257,11 @@ const formatDate = (dateString: string): string => {
 const metaDescription = stripHtml(post.excerpt.rendered).substring(0, 160);
 
 // Safely transform content with error handling
+// Internal links are already normalized in the data layer (src/lib/urls.ts).
 let sanitizedContent: string;
 try {
   const cleanContent = sanitizeContent(post.content.rendered);
-  // Transform internal links first, then media figures, then YouTube embeds
-  const linkedContent = transformInternalLinks(cleanContent);
-  const mediaContent = transformMediaFigures(linkedContent);
+  const mediaContent = transformMediaFigures(cleanContent);
   sanitizedContent = transformYouTubeEmbeds(mediaContent);
 } catch (error) {
   console.error(`❌ Error processing content for post ${post.slug}:`, error);

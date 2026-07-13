@@ -1,3 +1,5 @@
+import { getWpOrigin, normalizeContentLinks } from '../lib/urls.ts';
+
 export interface WPImage {
   source_url: string;
   alt_text?: string;
@@ -17,12 +19,13 @@ export interface WPPost {
   };
 }
 
-export interface WPList<T> { 
-  items: T[]; 
-  totalPages: number; 
+export interface WPList<T> {
+  items: T[];
+  totalPages: number;
 }
 
 const BASE = import.meta.env.PUBLIC_WP_BASE;
+const WP_ORIGIN = getWpOrigin(BASE);
 
 // Simple cache for build-time optimization
 const buildCache = new Map<string, any>();
@@ -95,15 +98,62 @@ async function fetchWP<T>(path: string, init?: RequestInit): Promise<{ data: T; 
 const listUrl = (page = 1, perPage = 6) =>
   `posts?_embed&per_page=${perPage}&page=${page}&status=publish&orderby=date&order=desc`;
 
-const bySlugUrl = (slug: string) => 
+const bySlugUrl = (slug: string) =>
   `posts?slug=${slug}&_embed&status=publish`;
+
+// Every published slug, so a WordPress link can be confirmed to have a local
+// route before it is rewritten. Fetched once per build.
+let knownSlugsCache: Promise<ReadonlySet<string>> | null = null;
+
+function getKnownSlugs(): Promise<ReadonlySet<string>> {
+  knownSlugsCache ??= (async () => {
+    const slugs = new Set<string>();
+    try {
+      let page = 1;
+      let totalPages = 1;
+      do {
+        const { data, headers } = await fetchWP<Array<{ slug: string }>>(
+          `posts?per_page=100&page=${page}&status=publish&_fields=slug`
+        );
+        for (const post of data) slugs.add(post.slug);
+        totalPages = Number(headers.get('X-WP-TotalPages') || 1);
+        page++;
+      } while (page <= totalPages);
+    } catch (error) {
+      // Without the slug index, links to WordPress are still moved off the
+      // backend host — they just cannot be turned into internal routes.
+      console.error('WordPress API error in getKnownSlugs:', error);
+    }
+    return slugs;
+  })();
+
+  return knownSlugsCache;
+}
+
+// Rewrite backend links once, here, so every consumer of a post gets public URLs.
+async function normalizePost(post: WPPost): Promise<WPPost> {
+  const knownSlugs = await getKnownSlugs();
+  const rewrite = (html: string) =>
+    normalizeContentLinks(html, {
+      knownSlugs,
+      wpOrigin: WP_ORIGIN,
+      onUnmapped: (href) =>
+        console.warn(`⚠️  ${post.slug}: WordPress link without a local route – ${href}`),
+    });
+
+  return {
+    ...post,
+    content: { ...post.content, rendered: rewrite(post.content?.rendered ?? '') },
+    excerpt: { ...post.excerpt, rendered: rewrite(post.excerpt?.rendered ?? '') },
+  };
+}
 
 export async function getPosts({ page = 1, perPage = 6 }: { page?: number; perPage?: number } = {}): Promise<WPList<WPPost>> {
   try {
     const { data: response, headers } = await fetchWP<WPPost[]>(listUrl(page, perPage));
     const totalPages = Number(headers.get("X-WP-TotalPages") || 1);
-    
-    return { items: response, totalPages };
+
+    return { items: await Promise.all(response.map(normalizePost)), totalPages };
   } catch (error) {
     console.error('WordPress API error in getPosts:', error);
     return { items: getMockPosts(), totalPages: 2 };
@@ -116,8 +166,8 @@ export async function getPostBySlug(slug: string): Promise<WPPost> {
     if (!response?.length) {
       throw new Error(`Post with slug "${slug}" not found`);
     }
-    
-    return response[0];
+
+    return normalizePost(response[0]);
   } catch (error) {
     console.error('WordPress API error in getPostBySlug:', error);
     const post = getMockPostBySlug(slug);
