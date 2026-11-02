@@ -99,3 +99,18 @@ jobs:
             --exclude='logs/' \
             -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
             ./dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/nico.ar/dist/"
+
+      # Rebuild Argensonix after successful publication
+      - name: Trigger Argensonix homepage rebuild
+        env:
+          ARGENSONIX_DEPLOY_HOOK: ${{ secrets.ARGENSONIX_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$ARGENSONIX_DEPLOY_HOOK" ]; then
+            echo "::warning::Argensonix deploy hook is not configured."
+          elif curl -fsS --max-time 15 \
+            -X POST "$ARGENSONIX_DEPLOY_HOOK" \
+            -o /dev/null; then
+            echo "Argensonix rebuild requested."
+          else
+            echo "::warning::Argensonix deploy hook failed."
+          fi
